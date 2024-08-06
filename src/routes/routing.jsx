@@ -1,18 +1,15 @@
-import React from 'react'
-import { Route, Routes } from 'react-router'
-
-  import Dashboard from '../components/admin/Dashboard'
-  
+import React from "react";
+import { Route, Routes } from "react-router";
+import Dashboard from "../pages/Admin/Dashboard";
 
 const routing = () => {
   return (
     <>
-    <Routes>
-<Route path="/admin" element={<>
-  <h1>1hghhvhvvygyguygvyugugugugu</h1> /n <p>1juhhghvhghvh hbjj jhbhj hjbj hjb</p></>} />
-    </Routes>
+      <Routes>
+        <Route path="/admin" element={<Dashboard />} />
+      </Routes>
     </>
-  )
-}
+  );
+};
 
-export default routing
+export default routing;
