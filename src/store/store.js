@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import dashboardReducer from "./AdminHomeAPI/adminhApiSlice";
 import adminLoginReducer from "./AdminLoginAPI/adminloginApiSlice";
 import loginReducer from "./authAPI/authApiSlice";
+import propertyReducer from "./PropertyAPI/propertyApiSlice";
 export const store = configureStore({
   reducer: {
     dashboard: dashboardReducer,
@@ -9,5 +10,6 @@ export const store = configureStore({
 
     //frontend
     users: loginReducer,
+    property: propertyReducer,
   },
 });

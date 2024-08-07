@@ -14,7 +14,7 @@ const Header = () => {
       </div>
       <Navbar expand="lg" className="bg-body-tertiary navbar-light">
         <Container>
-          <Navbar.Brand href="#home" className="d-flex align-items-center">
+          <Navbar.Brand href="/" className="d-flex align-items-center">
             <img
               src={Logo}
               className="d-inline-block align-top img-custom-size"
@@ -24,7 +24,7 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
-              <Nav.Link href="#login">
+              <Nav.Link href="/login">
                 <Button
                   variant="outline-primary"
                   className="rounded-pill fw-bold px-5 py-2"
@@ -32,7 +32,7 @@ const Header = () => {
                   Login
                 </Button>
               </Nav.Link>
-              <Nav.Link href="#signup">
+              <Nav.Link href="/register">
                 <Button
                   variant="primary"
                   className="rounded-pill fw-bold px-5 py-2"
@@ -50,7 +50,7 @@ const Header = () => {
             <Nav.Link href="#buy" className="  py-3 px-5 ">
               Buy
             </Nav.Link>
-            <Nav.Link href="#sell" className="  py-3 px-5  ">
+            <Nav.Link href="/add-property" className="  py-3 px-5  ">
               Sell
             </Nav.Link>
             <Nav.Link href="#profinder" className="  py-3 px-5 ">

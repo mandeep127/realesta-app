@@ -2,12 +2,13 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AdminDashboard } from "../../store/AdminHomeAPI/adminhApiSlice";
 import { Table, Container, Spinner, Alert } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
 
-  // Ensure this matches the key in your store configuration
   const { loading, authData, error } = useSelector((state) => state.dashboard);
+  console.log("Loading", authData);
 
   useEffect(() => {
     dispatch(AdminDashboard());
@@ -31,6 +32,10 @@ const Dashboard = () => {
     );
   }
 
+  const properties = Array.isArray(authData?.data.properties)
+    ? authData.data.properties
+    : [];
+
   return (
     <Container className="mt-4">
       <h1 className="mb-4">Welcome to the Admin Dashboard</h1>
@@ -38,13 +43,13 @@ const Dashboard = () => {
         This is your main content area. Add more components and information
         here.
       </p>
-      {authData && (
+      {properties.length > 0 ? (
         <div>
           <h2>New Properties:</h2>
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th>ID</th>
+                <th>S.No</th>
                 <th>Address</th>
                 <th>City</th>
                 <th>State</th>
@@ -54,12 +59,13 @@ const Dashboard = () => {
                 <th>Bedrooms</th>
                 <th>Bathrooms</th>
                 <th>Add At</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {authData.data.map((property) => (
+              {properties.map((property, index) => (
                 <tr key={property.id}>
-                  <td>{property.id}</td>
+                  <td>{index + 1}</td>
                   <td>{property.address}</td>
                   <td>{property.city}</td>
                   <td>{property.state}</td>
@@ -69,11 +75,21 @@ const Dashboard = () => {
                   <td>{property.bedrooms}</td>
                   <td>{property.bathrooms}</td>
                   <td>{new Date(property.updated_at).toLocaleString()}</td>
+                  <td>
+                    <Link
+                      to={`/property/${property.id}`}
+                      className="btn btn-primary"
+                    >
+                      View Details
+                    </Link>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </Table>
         </div>
+      ) : (
+        <p>No properties available.</p>
       )}
     </Container>
   );

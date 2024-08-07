@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaTachometerAlt, FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
 import { Nav } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
 import "./Header.css";
 import Img from "../../assets/dark.gif";
 
@@ -19,15 +20,17 @@ const Sidebar = () => {
         <hr />
       </div>
       <Nav className="flex-column">
-        <Nav.Link
-          href="#dashboard"
-          className={`d-flex fw-bold align-items-center mb-2 ${
-            activeLink === "#dashboard" ? "active" : ""
-          }`}
-          onClick={() => handleNavClick("#dashboard")}
+        <NavLink
+          to="/admin/dashboard"
+          className={({ isActive }) =>
+            `nav-link d-flex fw-bold align-items-center mb-2 ${
+              isActive ? "active" : ""
+            }`
+          }
         >
           <FaTachometerAlt className="me-2 fw-bold" /> Dashboard
-        </Nav.Link>
+        </NavLink>
+
         <Nav.Link
           href="#users"
           className={`d-flex fw-bold align-items-center mb-2 ${
@@ -37,6 +40,7 @@ const Sidebar = () => {
         >
           <FaUser className="me-2 " /> Users
         </Nav.Link>
+
         <Nav.Link
           href="#settings"
           className={`d-flex fw-bold align-items-center mb-2 ${

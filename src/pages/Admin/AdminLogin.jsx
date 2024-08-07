@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Container, Col, Form, Button } from "react-bootstrap";
+import { Container, Form, Button, Col } from "react-bootstrap";
 import { FaUser, FaLock } from "react-icons/fa";
 import Logo from "../../assets/admin.gif";
+import { useDispatch, useSelector } from "react-redux";
 import { AdminLogins } from "../../store/AdminLoginAPI/adminloginApiSlice";
 
 const AdminLogin = () => {
@@ -13,14 +13,21 @@ const AdminLogin = () => {
   const dispatch = useDispatch();
   const { loading, error, authData } = useSelector((state) => state.login);
 
-  console.log({ email, password });
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Clear any previous local errors
-      setLocalError("");
-      await dispatch(AdminLogins({ email, password })).unwrap();
+      setLocalError(""); // Clear any previous local errors
+      const response = await dispatch(
+        AdminLogins({ email, password })
+      ).unwrap();
+      // Handle successful login
+      if (response) {
+        console.log("Login response:", response);
+        localStorage.setItem("adminToken", response.token);
+        localStorage.setItem("adminName", response.name);
+        // Navigate to the dashboard or home page if needed
+        // navigate("/admin-dashboard");
+      }
     } catch (err) {
       // Handle errors from the API or Redux thunk
       if (err?.errors) {
@@ -36,7 +43,6 @@ const AdminLogin = () => {
   };
 
   const renderError = () => {
-    // Use localError state to display errors
     if (localError) {
       return <div className="text-danger mt-3 text-center">{localError}</div>;
     }
@@ -60,8 +66,8 @@ const AdminLogin = () => {
   };
 
   return (
-    <Container className="min-vh-100 d-flex align-items-center justify-content-center">
-      <Col md={4} className="border border-3 rounded-4 p-5">
+    <Container className="d-flex justify-content-center align-items-center min-vh-100">
+      <Col md={4} className="border border-3 rounded-4 p-5 bg-white shadow-lg">
         <h2 className="text-center mb-4">Admin Login</h2>
         {renderError()}
         <img
@@ -69,10 +75,9 @@ const AdminLogin = () => {
           alt="Admin logo"
           className="mb-4 img-fluid d-block mx-auto"
         />
-        <hr className="mx-5 my-4" />
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="formEmail">
-            <Form.Label className="fw-bolder">Email address :</Form.Label>
+            <Form.Label className="fw-bolder">Email Address:</Form.Label>
             <div className="input-group">
               <span className="input-group-text">
                 <FaUser />
@@ -88,7 +93,7 @@ const AdminLogin = () => {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formPassword">
-            <Form.Label className="fw-bolder">Password :</Form.Label>
+            <Form.Label className="fw-bolder">Password:</Form.Label>
             <div className="input-group">
               <span className="input-group-text">
                 <FaLock />

@@ -6,7 +6,7 @@ const routing = () => {
   return (
     <>
       <Routes>
-        <Route path="/admin" element={<Dashboard />} />
+        <Route path="/admin/dashboard" element={<Dashboard />} />
       </Routes>
     </>
   );

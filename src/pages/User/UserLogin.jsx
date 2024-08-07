@@ -10,7 +10,7 @@ import { Login } from "../../store/authAPI/authApiSlice";
 // import { toast } from "react-toastify";
 
 const UserLogin = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -21,7 +21,7 @@ const UserLogin = () => {
     event.preventDefault();
 
     try {
-      const response = await dispatch(Login({ username, password }));
+      const response = await dispatch(Login({ email, password }));
 
       if (response && response.payload.success.token) {
         console.log("Token:", response.payload);
@@ -69,9 +69,9 @@ const UserLogin = () => {
           <Form.Control
             className="rounded-1 border border-3 me-2"
             type="text"
-            placeholder="Email or Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
           <MdEmail size={25} />

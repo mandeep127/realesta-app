@@ -1,70 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { FaSearch, FaBed, FaBath, FaInfoCircle } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { FaBed, FaBath, FaChartArea } from "react-icons/fa";
+import { GrLinkNext } from "react-icons/gr";
 import HeroImg from "../../assets/hero1.jpg";
 import Img from "../../assets/hero.jpg";
 import "./Home.css";
+import { fetchHomeProperty } from "../../store/PropertyAPI/propertyApiSlice";
+import { useNavigate } from "react-router";
 
 const Home = () => {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("option1");
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const Navigate = useNavigate();
+  const { propertyHome, status, error } = useSelector(
+    (state) => state.property
+  );
+
+  useEffect(() => {
+    dispatch(fetchHomeProperty());
+  }, [dispatch]);
+
+  const handlePropertyClick = (id) => {
+    Navigate(`/property/${id}`);
+  };
 
   const handleSearch = () => {
     console.log(`Searching for "${query}" with filter "${filter}"`);
   };
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        const dummyProducts = [
-          {
-            id: 1,
-            name: "Product 1",
-            description: "Description for product 1",
-            price: 29.99,
-            image: "https://via.placeholder.com/306x200",
-            status: "sell",
-          },
-          {
-            id: 2,
-            name: "Product 2",
-            description: "Description for product 2",
-            price: 49.99,
-            image: "https://via.placeholder.com/306x200",
-            status: "not-sell",
-          },
-          {
-            id: 3,
-            name: "Product 3",
-            description: "Description for product 3",
-            price: 79.99,
-            image: "https://via.placeholder.com/306x200",
-            status: "sell",
-          },
-          {
-            id: 4,
-            name: "Product 4",
-            description: "Description for product 4",
-            price: 99.99,
-            image: "https://via.placeholder.com/306x200",
-            status: "not-sell",
-          },
-        ];
-
-        setProducts(dummyProducts.slice(0, 4));
-        setLoading(false);
-      } catch (error) {
-        setError("An error occurred while fetching the products.");
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
 
   return (
     <div className="container position-relative">
@@ -147,10 +110,12 @@ const Home = () => {
           </p>
         </div>
         <div
-          className="position-absolute bg-white p-3 rounded border shadow"
+          className="position-absolute bg-white p-3 px-4 py-4 pb-5 pt-4 rounded-4 border shadow"
           style={{ top: "390px", left: "90px" }}
         >
-          <p>Any specific deals you are looking for?</p>
+          <p className="px-3 fw-bold">
+            Any specific deals you are looking for?
+          </p>
           <div className="input-group">
             <input
               type="text"
@@ -171,55 +136,74 @@ const Home = () => {
             </select>
             <button
               onClick={handleSearch}
-              className="btn btn-primary rounded-circle"
+              className="btn btn-primary ms-3 px-3 py-3 rounded-circle"
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <FaSearch />
+              <GrLinkNext />
             </button>
           </div>
         </div>
       </div>
-      <h2 className="my-4 mx-4 fw-bold fs-1">Featured Products</h2>
+      <h2 className="my-4 mx-4 fw-bold fs-1">Featured Properties</h2>
       <div className="container mt-4">
-        {loading && <p>Loading products...</p>}
+        {status === "loading" && <p>Loading properties...</p>}
         {error && <p className="text-danger">{error}</p>}
         <div className="row">
-          {products.map((product) => (
-            <div className="col-md-3 mb-4 " key={product.id}>
-              <div className="border rounded-3 card">
-                <div className="card position-relative">
-                  <img
-                    src={product.image}
-                    className="card-img-top"
-                    alt={product.name}
-                    style={{
-                      width: "306px",
-                      height: "200px",
-                      objectFit: "cover",
-                    }}
-                  />
-                </div>
-                <div className="card-body mx-3 my-2">
-                  <div className="d-flex align-items-center mb-2">
-                    <FaBed className="me-2" />
-                    <span>2 Beds</span> {/* Dummy data for bedroom */}
-                    <FaBath className="ms-3 me-2" />
-                    <span>1 Bath</span> {/* Dummy data for bathroom */}
+          {propertyHome && propertyHome.data && propertyHome.data.length > 0 ? (
+            propertyHome.data.map((property) => (
+              <div className="col-md-3 mb-4" key={property.id}>
+                <div className="border rounded-3 card">
+                  <div
+                    className="card position-relative"
+                    onClick={() => handlePropertyClick(property.id)} // Add click handler to card
+                    style={{ cursor: "pointer" }} // Add cursor style to indicate clickable
+                  >
+                    <img
+                      src={
+                        property.image
+                          ? `http://127.0.0.1:8000/${property.image}`
+                          : "https://via.placeholder.com/306x200"
+                      }
+                      className="card-img-top"
+                      alt={property.address || "No address"}
+                      style={{
+                        width: "306px",
+                        height: "200px",
+                        objectFit: "cover",
+                      }}
+                    />
                   </div>
-                  <hr />
-                  <h5 className="card-title">{product.name}</h5>
-                  <p className="card-text">{product.description}</p>
-                  <p className="card-text">
-                    <strong>${product.price}</strong>
-                  </p>
+                  <div className="card-body mx-3 my-2">
+                    <div className="d-flex align-items-center mb-2">
+                      <FaBed className="me-2" />
+                      <span>{property.bedrooms || "N/A"} Beds</span>
+                      <FaBath className="ms-3 me-2" />
+                      <span>{property.bathrooms || "N/A"} Baths</span>
+
+                      <FaChartArea className="ms-3 me-2" />
+                      <span>{property.size || "N/A"} sq ft</span>
+                    </div>
+                    <hr />
+                    <h5 className="card-title">
+                      {property.address || "No address"}
+                    </h5>
+                    <p className="card-text">
+                      {property.description || "No description"}
+                    </p>
+                    <p className="card-text">
+                      <strong>${property.price || "0.00"}</strong>
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p>No properties available.</p>
+          )}
         </div>
         <div className="text-center my-4">
           <button className="btn btn-primary mt-3 rounded-5 px-5 py-3 fw-bold">
@@ -238,7 +222,7 @@ const Home = () => {
         </p>
         <div className="video-container">
           <video
-            className="w-100 rounded-5 "
+            className="w-100 rounded-5"
             controls
             style={{
               borderRadius: "8px",
