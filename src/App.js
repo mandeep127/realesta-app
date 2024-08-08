@@ -9,6 +9,7 @@ import UserLogin from "./pages/User/UserLogin";
 import Register from "./pages/User/UserRegister";
 import PropertyForm from "./pages/User/PropertyForm";
 import PropertyDetail from "./pages/User/PropertyDetail";
+import Property from "./pages/User/Property";
 
 function App() {
   return (
@@ -46,6 +47,16 @@ function App() {
             <>
               <Layouts>
                 <PropertyDetail />
+              </Layouts>
+            </>
+          }
+        />
+        <Route
+          path="/property"
+          element={
+            <>
+              <Layouts>
+                <Property />
               </Layouts>
             </>
           }

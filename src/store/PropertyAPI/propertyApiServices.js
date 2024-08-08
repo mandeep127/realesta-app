@@ -44,3 +44,16 @@ export const detailsPropertyApi = async (data) => {
     throw error;
   }
 };
+
+// filter properties
+export const filterPropertyApi = async (filters) => {
+  try {
+    const response = await axios.get(`${API_URL}api/filter-properties`, {
+      params: filters,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error in API:", error);
+    throw error;
+  }
+};

@@ -6,6 +6,8 @@ import {
   addProperty,
 } from "../../store/PropertyAPI/propertyApiSlice";
 import "./style.css";
+import { Link } from "react-router-dom";
+import { IoCaretBackCircle } from "react-icons/io5";
 
 const PropertyForm = () => {
   const [formData, setFormData] = useState({
@@ -95,8 +97,13 @@ const PropertyForm = () => {
 
   return (
     <div className="property-form-container rounded-5 pb-5 my-5">
+      <Link to="/" className="btn btn-secondary mb-3">
+        <IoCaretBackCircle className="pb-1" size={20} /> Back to Home
+      </Link>
       <Form onSubmit={handleSubmit} className="property-form">
-        <h2>Property Address</h2>
+        <h2 className="py-3 bg-primary ps-3 text-light rounded-2">
+          Property Address
+        </h2>
         <Row>
           <Col md={6}>
             <Form.Group controlId="address">
@@ -104,6 +111,7 @@ const PropertyForm = () => {
               <Form.Control
                 type="text"
                 name="address"
+                placeholder="Enter address"
                 value={formData.address}
                 onChange={handleChange}
                 required
@@ -116,6 +124,7 @@ const PropertyForm = () => {
               <Form.Control
                 type="text"
                 name="city"
+                placeholder="Enter city"
                 value={formData.city}
                 onChange={handleChange}
                 required
@@ -125,11 +134,12 @@ const PropertyForm = () => {
         </Row>
         <Row>
           <Col md={6}>
-            <Form.Group controlId="state">
+            <Form.Group className="mt-3" controlId="state">
               <Form.Label>State:</Form.Label>
               <Form.Control
                 type="text"
                 name="state"
+                placeholder="Enter state"
                 value={formData.state}
                 onChange={handleChange}
                 required
@@ -137,11 +147,12 @@ const PropertyForm = () => {
             </Form.Group>
           </Col>
           <Col md={6}>
-            <Form.Group controlId="pincode">
+            <Form.Group className="mt-3" controlId="pincode">
               <Form.Label>Pincode:</Form.Label>
               <Form.Control
                 type="text"
                 name="pincode"
+                placeholder="Enter pincode"
                 value={formData.pincode}
                 onChange={handleChange}
                 required
@@ -151,11 +162,12 @@ const PropertyForm = () => {
         </Row>
         <Row>
           <Col md={6}>
-            <Form.Group controlId="country">
+            <Form.Group className="mt-3" controlId="country">
               <Form.Label>Country:</Form.Label>
               <Form.Control
                 type="text"
                 name="country"
+                placeholder="Enter country"
                 value={formData.country}
                 onChange={handleChange}
                 required
@@ -163,7 +175,7 @@ const PropertyForm = () => {
             </Form.Group>
           </Col>
           <Col md={6}>
-            <Form.Group controlId="image">
+            <Form.Group className="mt-3" controlId="image">
               <Form.Label>Image:</Form.Label>
               <Form.Control
                 type="file"
@@ -175,19 +187,24 @@ const PropertyForm = () => {
           </Col>
         </Row>
 
-        <h2 className="pt-5">Property Summary</h2>
+        <h2 className="mt-5 py-3 bg-primary ps-3 text-light rounded-2">
+          Property Summary
+        </h2>
         <Row>
           <Col md={6}>
             <Form.Group controlId="property_type_id">
               <Form.Label>Property Type:</Form.Label>
               <Form.Control
                 as="select"
+                className="fw-bold"
                 name="property_type_id"
                 value={formData.property_type_id}
                 onChange={handleChange}
                 required
               >
-                <option value="">Select Property Type</option>
+                <option className="fw-bold" value="">
+                  Select Property Type
+                </option>
                 {Array.isArray(propertyTypes.data) &&
                 propertyTypes.data.length > 0 ? (
                   propertyTypes.data.map((propertyType) => (
@@ -207,6 +224,7 @@ const PropertyForm = () => {
               <Form.Control
                 type="text"
                 name="basement"
+                placeholder="enter baseline"
                 value={formData.basement}
                 onChange={handleChange}
                 required
@@ -216,11 +234,12 @@ const PropertyForm = () => {
         </Row>
         <Row>
           <Col md={6}>
-            <Form.Group controlId="parking_number">
+            <Form.Group className="mt-3" controlId="parking_number">
               <Form.Label>Parking Number:</Form.Label>
               <Form.Control
                 type="text"
                 name="parking_number"
+                placeholder="enter number of parking spaces"
                 value={formData.parking_number}
                 onChange={handleChange}
                 required
@@ -229,7 +248,9 @@ const PropertyForm = () => {
           </Col>
         </Row>
 
-        <h2 className="pt-5">Building</h2>
+        <h2 className="mt-5 py-3 bg-primary ps-3 text-light rounded-2">
+          Building
+        </h2>
         <Row>
           <Col md={4}>
             <Form.Group controlId="bedrooms">
@@ -237,6 +258,7 @@ const PropertyForm = () => {
               <Form.Control
                 type="number"
                 name="bedrooms"
+                placeholder="Enter number of bedrooms"
                 value={formData.bedrooms}
                 onChange={handleChange}
                 required
@@ -250,6 +272,7 @@ const PropertyForm = () => {
               <Form.Control
                 type="number"
                 name="bathrooms"
+                placeholder="Enter number of bathrooms"
                 value={formData.bathrooms}
                 onChange={handleChange}
                 required
@@ -263,6 +286,7 @@ const PropertyForm = () => {
               <Form.Control
                 type="number"
                 name="size"
+                placeholder="Enter size in square feet"
                 value={formData.size}
                 onChange={handleChange}
                 required
@@ -272,14 +296,17 @@ const PropertyForm = () => {
           </Col>
         </Row>
 
-        <h2 className="pt-5">Price</h2>
+        <h2 className="mt-5 py-3 bg-primary ps-3 text-light rounded-2">
+          Price
+        </h2>
         <Row>
           <Col md={6}>
             <Form.Group controlId="price">
-              <Form.Label>Price:</Form.Label>
+              <Form.Label>Estimate Price:</Form.Label>
               <Form.Control
                 type="number"
                 name="price"
+                placeholder="Enter estimated price"
                 value={formData.price}
                 onChange={handleChange}
                 required
@@ -289,15 +316,19 @@ const PropertyForm = () => {
           </Col>
         </Row>
 
-        <h2 className="pt-5">Description</h2>
+        <h2 className="mt-5 py-3 bg-primary ps-3 text-light rounded-2">
+          Description
+        </h2>
         <Row>
           <Col>
             <Form.Group controlId="description">
-              <Form.Label>Description:</Form.Label>
+              <Form.Label>Description (maxLength:500):</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
                 name="description"
+                placeholder="Enter description"
+                maxLength={500}
                 value={formData.description}
                 onChange={handleChange}
                 required
@@ -308,7 +339,7 @@ const PropertyForm = () => {
 
         <Button
           type="submit"
-          className="btn btn-primary mt-3 rounded-5 px-5 py-2"
+          className="btn btn-primary mt-4 rounded-5  px-5 py-3"
         >
           {status === "loading" ? "Submitting..." : "Submit"}
         </Button>

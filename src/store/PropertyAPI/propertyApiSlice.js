@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   createPropertyApi,
   detailsPropertyApi,
+  filterPropertyApi,
   homePropertyApi,
   propertyTypeApi,
 } from "./propertyApiServices";
@@ -14,6 +15,7 @@ const initialState = {
   propertyTypes: [],
   propertyHome: null,
   propertyDetails: null,
+  properties: [],
 };
 
 // Async thunk for adding a new property
@@ -73,6 +75,18 @@ export const fetchDetailsProperty = createAsyncThunk(
   }
 );
 
+export const applyFilters = createAsyncThunk(
+  "filters/applyFilters",
+  async (filters, thunkAPI) => {
+    try {
+      const response = await filterPropertyApi(filters);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
 const propertySlice = createSlice({
   name: "property",
   initialState,
@@ -125,6 +139,19 @@ const propertySlice = createSlice({
       .addCase(fetchDetailsProperty.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
+      })
+      //applyFilters
+      .addCase(applyFilters.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(applyFilters.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.properties = action.payload;
+      })
+      .addCase(applyFilters.rejected, (state, action) => {
+        state.error = action.payload;
+        state.loading = false;
       });
   },
 });

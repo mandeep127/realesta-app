@@ -77,7 +77,7 @@ const Dashboard = () => {
                   <td>{new Date(property.updated_at).toLocaleString()}</td>
                   <td>
                     <Link
-                      to={`/property/${property.id}`}
+                      to={`/admin/property/${property.id}`}
                       className="btn btn-primary"
                     >
                       View Details

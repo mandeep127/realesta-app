@@ -98,11 +98,11 @@ const Home = () => {
         </div>
         <div
           className="position-absolute p-3"
-          style={{ top: "60px", left: "70px" }}
+          style={{ top: "40px", left: "90px" }}
         >
           <p
             className="fw-bold"
-            style={{ fontSize: "90px", lineHeight: "100px" }}
+            style={{ fontSize: "80px", lineHeight: "80px" }}
           >
             Get
             <br /> Best <span className="deals-custom">Deals</span> <br />
@@ -111,7 +111,7 @@ const Home = () => {
         </div>
         <div
           className="position-absolute bg-white p-3 px-4 py-4 pb-5 pt-4 rounded-4 border shadow"
-          style={{ top: "390px", left: "90px" }}
+          style={{ top: "340px", left: "100px" }}
         >
           <p className="px-3 fw-bold">
             Any specific deals you are looking for?

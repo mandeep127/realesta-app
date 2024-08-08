@@ -12,3 +12,41 @@ export const adminDashboardApi = async () => {
     throw error;
   }
 };
+
+// property details
+// export const adminPropertyInfoApi = async (data) => {
+//   try {
+//     const response = await axios.get(
+//       `${API_URL}api/admin/property/${data}`,
+//       data
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error in API:", error);
+//     throw error;
+//   }
+// };
+
+export const detailPropertyApi = async (data) => {
+  try {
+    const response = await axios.get(`${API_URL}api/property/${data}`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error in API:", error);
+    throw error;
+  }
+};
+
+// Update property status
+export const updatePropertyStatusApi = async (data) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}api/admin/property/status/${data}`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error in API:", error);
+    throw error;
+  }
+};
