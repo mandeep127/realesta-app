@@ -42,10 +42,13 @@ const PropertyInfo = () => {
     dispatch(
       UpdatePropertyStatus({
         id,
-        status: isStatusActive ? "0" : "1",
+        status: isStatusActive ? "0" : "1", // Make sure this matches the expected status values
       })
-    );
-    setIsStatusActive(!isStatusActive);
+    ).then((response) => {
+      if (response.meta.requestStatus === "fulfilled") {
+        setIsStatusActive(!isStatusActive); // Update local state only if API call is successful
+      }
+    });
   };
 
   return (

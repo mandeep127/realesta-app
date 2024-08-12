@@ -47,7 +47,7 @@ const Header = () => {
       <Navbar className="custom-bg-head fw-bold">
         <Container>
           <Nav className="mx-auto fs-5">
-            <Nav.Link href="#buy" className="  py-3 px-5 ">
+            <Nav.Link href="/property" className="  py-3 px-5 ">
               Buy
             </Nav.Link>
             <Nav.Link href="/add-property" className="  py-3 px-5  ">

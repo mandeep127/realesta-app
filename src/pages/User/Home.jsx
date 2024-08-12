@@ -17,6 +17,9 @@ const Home = () => {
     (state) => state.property
   );
 
+  const handleViewDeals = () => {
+    Navigate("/property");
+  };
   useEffect(() => {
     dispatch(fetchHomeProperty());
   }, [dispatch]);
@@ -206,7 +209,10 @@ const Home = () => {
           )}
         </div>
         <div className="text-center my-4">
-          <button className="btn btn-primary mt-3 rounded-5 px-5 py-3 fw-bold">
+          <button
+            className="btn btn-primary mt-3 rounded-5 px-5 py-3 fw-bold"
+            onClick={handleViewDeals}
+          >
             View All New Deals
           </button>
         </div>

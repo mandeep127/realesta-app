@@ -16,7 +16,8 @@ const PropertyForm = () => {
     state: "",
     pincode: "",
     country: "",
-    image: null,
+    image: null, // Single main image
+    subImages: [], // Multiple sub-images
     property_type_id: "",
     basement: "",
     parking_number: "",
@@ -36,14 +37,26 @@ const PropertyForm = () => {
     dispatch(fetchPropertyTypes());
   }, [dispatch]);
 
-  console.log("Property Types from Redux:", propertyTypes.data);
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
-    const newValue = type === "file" ? files[0] : value;
-    setFormData({
-      ...formData,
-      [name]: newValue,
-    });
+    if (type === "file") {
+      if (name === "image") {
+        setFormData((prevState) => ({
+          ...prevState,
+          image: files[0], // Handle single file for main image
+        }));
+      } else if (name === "subImages") {
+        setFormData((prevState) => ({
+          ...prevState,
+          subImages: Array.from(files), // Handle multiple files for sub-images
+        }));
+      }
+    } else {
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -67,12 +80,18 @@ const PropertyForm = () => {
     Object.entries(formDataWithNumbersOnly).forEach(([key, value]) => {
       formDataToSend.append(key, value);
     });
-    formDataToSend.append("image", formData.image);
+
+    // Append main image and sub-images to FormData
+    if (formData.image) {
+      formDataToSend.append("image", formData.image);
+    }
+    formData.subImages.forEach((image, index) => {
+      formDataToSend.append(`subImages[${index}]`, image);
+    });
 
     // Dispatch action to add property with formDataToSend
     try {
       await dispatch(addProperty(formDataToSend));
-      // Handle success (show success message, reset form, etc.)
       alert("Property added successfully!");
       setFormData({
         address: "",
@@ -81,6 +100,7 @@ const PropertyForm = () => {
         pincode: "",
         country: "",
         image: null,
+        subImages: [],
         property_type_id: "",
         basement: "",
         parking_number: "",
@@ -176,10 +196,24 @@ const PropertyForm = () => {
           </Col>
           <Col md={6}>
             <Form.Group className="mt-3" controlId="image">
-              <Form.Label>Image:</Form.Label>
+              <Form.Label>Main Image:</Form.Label>
               <Form.Control
                 type="file"
                 name="image"
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <Form.Group className="mt-3" controlId="subImages">
+              <Form.Label>Sub Images:</Form.Label>
+              <Form.Control
+                type="file"
+                name="subImages"
+                multiple
                 onChange={handleChange}
                 required
               />
@@ -224,7 +258,7 @@ const PropertyForm = () => {
               <Form.Control
                 type="text"
                 name="basement"
-                placeholder="enter baseline"
+                placeholder="Enter basement"
                 value={formData.basement}
                 onChange={handleChange}
                 required
@@ -239,7 +273,7 @@ const PropertyForm = () => {
               <Form.Control
                 type="text"
                 name="parking_number"
-                placeholder="enter number of parking spaces"
+                placeholder="Enter number of parking spaces"
                 value={formData.parking_number}
                 onChange={handleChange}
                 required
@@ -339,7 +373,7 @@ const PropertyForm = () => {
 
         <Button
           type="submit"
-          className="btn btn-primary mt-4 rounded-5  px-5 py-3"
+          className="btn btn-primary mt-4 rounded-5 px-5 py-3"
         >
           {status === "loading" ? "Submitting..." : "Submit"}
         </Button>

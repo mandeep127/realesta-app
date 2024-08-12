@@ -5,6 +5,9 @@ import { FaBed, FaBath, FaChartArea } from "react-icons/fa";
 import { fetchDetailsProperty } from "../../store/PropertyAPI/propertyApiSlice";
 import "./PropertyDetail.css";
 import { IoCaretBackCircle } from "react-icons/io5";
+import { FcHome } from "react-icons/fc";
+import { AiFillHome } from "react-icons/ai";
+import { MdOutlineDescription } from "react-icons/md";
 
 const PropertyDetail = () => {
   const { id } = useParams(); // Get property ID from URL
@@ -12,6 +15,11 @@ const PropertyDetail = () => {
   const { propertyDetails, status, error } = useSelector(
     (state) => state.property
   );
+
+  const propertyType = {
+    1: "Residential",
+    2: "Multi-Family",
+  };
 
   // Mortgage calculator state
   const [loanAmount, setLoanAmount] = useState(0);
@@ -51,7 +59,7 @@ const PropertyDetail = () => {
   if (error) return <p className="text-center text-danger">{error}</p>;
 
   const property = propertyDetails?.data.property;
-  const propertyImages = propertyDetails?.property_sub_images || [];
+  const propertyImages = propertyDetails?.images || [];
 
   return (
     <div className="container mt-5 py-4">
@@ -78,29 +86,29 @@ const PropertyDetail = () => {
           <div className="col-md-5 mb-4">
             <div id="propertyCarousel" className="carousel slide">
               <div className="carousel-inner">
-                {propertyImages.length > 0 ? (
-                  propertyImages.map((image, index) => (
-                    <div
-                      key={index}
-                      className={`carousel-item ${index === 0 ? "active" : ""}`}
-                    >
-                      <img
-                        src={`http://127.0.0.1:8000/${image.image_url}`}
-                        className="d-block w-100 img-fluid rounded"
-                        alt="Property"
-                      />
-                    </div>
-                  ))
-                ) : (
-                  <div className="carousel-item active">
-                    <img
-                      src="https://via.placeholder.com/400x300"
-                      className="d-block w-100 img-fluid rounded"
-                      alt="Placeholder"
-                    />
-                  </div>
-                )}
+                {propertyImages.length > 0
+                  ? propertyImages.map((image, index) => (
+                      <div
+                        key={index}
+                        className={`carousel-item ${
+                          index === 0 ? "active" : ""
+                        }`}
+                      >
+                        <img
+                          src={`http://127.0.0.1:8000/${image}`}
+                          className="d-block w-100 img-fluid rounded"
+                          alt={`Property ${index + 1}`}
+                        />
+                      </div>
+                    ))
+                  : null}{" "}
+                {/* No placeholder shown if no images */}
               </div>
+              <img
+                src={`http://127.0.0.1:8000/${property.image}`}
+                className="d-block w-100 img-fluid rounded"
+                alt={`Property`}
+              />
               <button
                 className="carousel-control-prev"
                 type="button"
@@ -129,30 +137,60 @@ const PropertyDetail = () => {
           </div>
 
           {/* Property Details */}
-          <div className="col-md-7">
-            <h2 className="text-primary mb-3">
-              {property.address || "No Address"}
-            </h2>
-            <div className="d-flex align-items-center mb-4 text-muted">
-              <FaBed className="me-2" />
-              <span>{property.bedrooms || "N/A"} Beds</span>
-              <FaBath className="ms-3 me-2" />
-              <span>{property.bathrooms || "N/A"} Baths</span>
-              <FaChartArea className="ms-3 me-2" />
-              <span>{property.size || "N/A"} sq ft</span>
-            </div>
-            <p className="text-muted mb-4">
-              {property.description || "No description available."}
-            </p>
-            <p className="mb-4">
-              <strong className="text-success">
-                Price: ${property.price || "0.00"}
+          <div className="col-md-7 pt-3 px-5">
+            <p>
+              <strong className="text-dark fs-3 ">
+                $ {property.price || "0.00"}
               </strong>
             </p>
+            <p className="text-primary mb-3 fs-1">
+              {property.address || "No Address"}
+            </p>
+            <div className="d-flex flex-wrap align-items-center mb-4 bg-light rounded p-4 shadow-sm">
+              <div className="d-flex align-items-center me-4">
+                <FcHome size={24} />
+                <div className="ms-3">
+                  <div className="fw-light ">Property Type</div>
+                  <div className="fw-bold fs-4">
+                    {propertyType[property.property_type_id] || "Unknown"}
+                  </div>
+                </div>
+              </div>
+
+              <div className="d-flex align-items-center me-4 ms-5">
+                <FaBed size={20} />
+                <div className="ms-3 fs-5">
+                  {property.bedrooms || "N/A"} Beds
+                </div>
+              </div>
+
+              <div className="d-flex align-items-center me-4 ms-2">
+                <FaBath size={20} />
+                <div className="ms-3 fs-5">
+                  {property.bathrooms || "N/A"} Baths
+                </div>
+              </div>
+
+              <div className="d-flex align-items-center  ms-2">
+                <FaChartArea size={20} />
+                <div className="ms-3 fs-5">{property.size || "N/A"} sq ft</div>
+              </div>
+            </div>
+            <div>
+              <p className="fs-5">
+                <AiFillHome className="me-2 " />
+                Property Details :
+              </p>
+            </div>
+
             <p>
               <strong>
                 Location: {property.city || "N/A"}, {property.state || "N/A"}
               </strong>
+            </p>
+            <p className="text-muted mb-4">
+              <MdOutlineDescription />{" "}
+              {property.description || "No description available."}
             </p>
           </div>
         </div>

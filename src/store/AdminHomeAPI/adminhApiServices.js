@@ -38,11 +38,13 @@ export const detailPropertyApi = async (data) => {
 };
 
 // Update property status
-export const updatePropertyStatusApi = async (data) => {
+export const updatePropertyStatusApi = async ({ id, status }) => {
   try {
     const response = await axios.get(
-      `${API_URL}api/admin/property/status/${data}`,
-      data
+      `${API_URL}api/admin/property/${id}/status/`,
+      {
+        params: { status }, // Pass status as a query parameter
+      }
     );
     return response.data;
   } catch (error) {
