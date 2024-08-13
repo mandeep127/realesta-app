@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AdminDashboard } from "../../store/AdminHomeAPI/adminhApiSlice";
 import { Table, Container, Spinner, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { AiOutlineLink } from "react-icons/ai";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -76,13 +77,21 @@ const Dashboard = () => {
                   <td>{property.bathrooms}</td>
                   <td>{new Date(property.updated_at).toLocaleString()}</td>
                   <td>
+                    <a
+                      href={`/admin/property/${property.id}`}
+                      style={{ color: "blue" }}
+                    >
+                      <AiOutlineLink /> View Details
+                    </a>
+                  </td>
+                  {/* <td>
                     <Link
                       to={`/admin/property/${property.id}`}
                       className="btn btn-primary"
                     >
                       View Details
                     </Link>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>

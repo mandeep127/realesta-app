@@ -3,6 +3,11 @@ import {
   adminDashboardApi,
   adminPropertyInfoApi,
   detailPropertyApi,
+  getAllApi,
+  getAllBuyerApi,
+  getAllSellersApi,
+  getAllUsersApi,
+  getUserInfoApi,
   updatePropertyStatusApi,
 } from "./adminhApiServices";
 
@@ -12,10 +17,14 @@ const initialState = {
   authData: null,
   propertyDetails: null,
   propertyStatus: null,
+  users: [],
+  usersSeller: [],
+  pagination: {},
+  userDetails: [],
 };
 
 export const AdminDashboard = createAsyncThunk(
-  "adminDashboard/fetchData", // Changed to match the slice name
+  "adminDashboard/fetchData",
   async (_, thunkAPI) => {
     try {
       const response = await adminDashboardApi();
@@ -72,6 +81,54 @@ export const UpdatePropertyStatus = createAsyncThunk(
   }
 );
 
+//getAllApi
+export const fetchUsers = createAsyncThunk(
+  "admin/fetchUsers",
+  async (page, thunkAPI) => {
+    try {
+      const response = await getAllApi(page);
+      // console.log("API Response:", response);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+// //getAllSellersApi
+// export const fetchSellerUsers = createAsyncThunk(
+//   "admin/fetchSellerUsers",
+//   async (page, thunkAPI) => {
+//     try {
+//       const response = await getAllSellersApi("Seller", page);
+//       // console.log("API Response:", response);
+//       return response;
+//     } catch (error) {
+//       return thunkAPI.rejectWithValue(
+//         error.response ? error.response.data : error.message
+//       );
+//     }
+//   }
+// );
+
+//getUserInfoApi
+export const fetchUserInfo = createAsyncThunk(
+  "admin/fetchUserInfo",
+  async (id, thunkAPI) => {
+    try {
+      const response = await getUserInfoApi(id);
+      // console.log("API Response:", response);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
 const AdminDashboardSlice = createSlice({
   name: "Dashboard",
   initialState,
@@ -111,6 +168,48 @@ const AdminDashboardSlice = createSlice({
       })
       .addCase(UpdatePropertyStatus.rejected, (state, action) => {
         state.status = "failed";
+        state.error = action.payload;
+      })
+      //GetUsers
+      .addCase(fetchUsers.pending, (state) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = action.payload.data.users;
+        state.pagination = action.payload.data.pagination;
+      })
+      .addCase(fetchUsers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // //fetchSellerUsers
+      // .addCase(fetchSellerUsers.pending, (state) => {
+      //   state.loading = true;
+      //   state.error = "";
+      // })
+      // .addCase(fetchSellerUsers.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   state.usersSeller = action.payload.data.users;
+      //   state.pagination = action.payload.data.pagination;
+      // })
+      // .addCase(fetchSellerUsers.rejected, (state, action) => {
+      //   state.loading = false;
+      //   state.error = action.payload;
+      // })
+
+      //fetchUserInfo
+      .addCase(fetchUserInfo.pending, (state) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(fetchUserInfo.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userDetails = action.payload;
+      })
+      .addCase(fetchUserInfo.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       });
   },

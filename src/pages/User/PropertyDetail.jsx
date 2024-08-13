@@ -3,6 +3,8 @@ import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FaBed, FaBath, FaChartArea } from "react-icons/fa";
 import { fetchDetailsProperty } from "../../store/PropertyAPI/propertyApiSlice";
+import { Carousel, Image } from "react-bootstrap";
+
 import "./PropertyDetail.css";
 import { IoCaretBackCircle } from "react-icons/io5";
 import { FcHome } from "react-icons/fc";
@@ -20,6 +22,8 @@ const PropertyDetail = () => {
     1: "Residential",
     2: "Multi-Family",
   };
+
+  const [activeIndex, setActiveIndex] = useState(0);
 
   // Mortgage calculator state
   const [loanAmount, setLoanAmount] = useState(0);
@@ -59,7 +63,11 @@ const PropertyDetail = () => {
   if (error) return <p className="text-center text-danger">{error}</p>;
 
   const property = propertyDetails?.data.property;
-  const propertyImages = propertyDetails?.images || [];
+  const propertyImages = propertyDetails?.data?.property_sub_images || [];
+
+  const handleSelect = (selectedIndex) => {
+    setActiveIndex(selectedIndex);
+  };
 
   return (
     <div className="container mt-5 py-4">
@@ -72,7 +80,6 @@ const PropertyDetail = () => {
             <li className="breadcrumb-item">
               <Link to="/">Home</Link>
             </li>
-
             <li className="breadcrumb-item active" aria-current="page">
               <Link to="/property/">property</Link>
             </li>
@@ -83,61 +90,61 @@ const PropertyDetail = () => {
       {property && (
         <div className="row">
           {/* Image Gallery */}
-          <div className="col-md-5 mb-4">
-            <div id="propertyCarousel" className="carousel slide">
-              <div className="carousel-inner">
-                {propertyImages.length > 0
-                  ? propertyImages.map((image, index) => (
-                      <div
-                        key={index}
-                        className={`carousel-item ${
-                          index === 0 ? "active" : ""
-                        }`}
-                      >
-                        <img
-                          src={`http://127.0.0.1:8000/${image}`}
-                          className="d-block w-100 img-fluid rounded"
-                          alt={`Property ${index + 1}`}
-                        />
-                      </div>
-                    ))
-                  : null}{" "}
-                {/* No placeholder shown if no images */}
-              </div>
-              <img
-                src={`http://127.0.0.1:8000/${property.image}`}
-                className="d-block w-100 img-fluid rounded"
-                alt={`Property`}
-              />
-              <button
-                className="carousel-control-prev"
-                type="button"
-                data-bs-target="#propertyCarousel"
-                data-bs-slide="prev"
-              >
+          <div className="col-md-7 mb-4">
+            <Carousel
+              id="imageSlider"
+              activeIndex={activeIndex}
+              onSelect={handleSelect}
+              pause={false}
+              interval={2000}
+              nextIcon={
                 <span
-                  className="carousel-control-prev-icon"
-                  aria-hidden="true"
-                ></span>
-                <span className="visually-hidden">Previous</span>
-              </button>
-              <button
-                className="carousel-control-next"
-                type="button"
-                data-bs-target="#propertyCarousel"
-                data-bs-slide="next"
-              >
+                  className="carousel-control-next-icon bg-black rounded-1"
+                  style={{ marginLeft: "-73px" }}
+                />
+              }
+              prevIcon={
                 <span
-                  className="carousel-control-next-icon"
-                  aria-hidden="true"
-                ></span>
-                <span className="visually-hidden">Next</span>
-              </button>
+                  className="carousel-control-prev-icon bg-black rounded-1"
+                  style={{ marginRight: "-73px" }}
+                />
+              }
+            >
+              {propertyImages.map((image, index) => (
+                <Carousel.Item key={index}>
+                  <Image
+                    width="1200"
+                    height="400"
+                    src={`http://127.0.0.1:8000/${image.sub_images}`}
+                    className="d-block mx-auto rounded-3"
+                    alt={`Slide ${index + 1}`}
+                    fluid
+                  />
+                </Carousel.Item>
+              ))}
+            </Carousel>
+            <div className="d-flex justify-content-center mb-3 pt-4">
+              {propertyImages.map((image, index) => (
+                <a
+                  key={index}
+                  className={`border mx-1 rounded-2 imgHover ${
+                    activeIndex === index ? "active" : ""
+                  }`}
+                  onClick={() => setActiveIndex(index)}
+                >
+                  <Image
+                    width="60"
+                    height="60"
+                    className="rounded-2"
+                    src={`http://127.0.0.1:8000/${image.sub_images}`}
+                  />
+                </a>
+              ))}
             </div>
           </div>
 
           {/* Property Details */}
-          <div className="col-md-7 pt-3 px-5">
+          <div className="col-md-5 pt-3 px-5">
             <p>
               <strong className="text-dark fs-3 ">
                 $ {property.price || "0.00"}
