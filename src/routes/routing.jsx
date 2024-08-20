@@ -4,6 +4,7 @@ import Dashboard from "../pages/Admin/Dashboard";
 import PropertyInfo from "../pages/Admin/PropertyInfo";
 import UsersList from "../pages/Admin/UsersList";
 import UserDetails from "../pages/Admin/UserDetails";
+import AdminLogout from "../components/admin/AdminLogout";
 
 const routing = () => {
   return (
@@ -13,6 +14,7 @@ const routing = () => {
         <Route path="/admin/property/:id" element={<PropertyInfo />} />
         <Route path="/admin/users" element={<UsersList />} />
         <Route path="/admin/user/:id" element={<UserDetails />} />
+        <Route path="/admin/logout" element={<AdminLogout />} />
       </Routes>
     </>
   );

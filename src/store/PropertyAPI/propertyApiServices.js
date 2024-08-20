@@ -12,6 +12,20 @@ export const propertyTypeApi = async (data) => {
     throw error;
   }
 };
+
+//fetch property by filters
+// export const filterProperty = async (filters) => {
+//   try {
+//     const response = await axios.get(`${API_URL}api/property`, {
+//       params: filters,
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.error("Failed to filter properties :", error);
+//     throw error;
+//   }
+// };
+
 //fetch home property
 export const homePropertyApi = async (data) => {
   try {

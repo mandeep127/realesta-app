@@ -10,6 +10,7 @@ import Register from "./pages/User/UserRegister";
 import PropertyForm from "./pages/User/PropertyForm";
 import PropertyDetail from "./pages/User/PropertyDetail";
 import Property from "./pages/User/Property";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
   return (
@@ -19,7 +20,14 @@ function App() {
         <Route path="/login" element={<UserLogin />} />
         <Route path="/register" element={<Register />} />
 
-        <Route path="*" element={<AdminLayout />} />
+        <Route
+          path="*"
+          element={
+            <ProtectedRoute>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/"

@@ -1,3 +1,46 @@
+// import React, { useState, useEffect } from "react";
+// import { useDispatch, useSelector } from "react-redux";
+// import { FaBed, FaBath, FaChartArea } from "react-icons/fa";
+// import { GrLinkNext } from "react-icons/gr";
+// import HeroImg from "../../assets/hero1.jpg";
+// import Img from "../../assets/hero.jpg";
+// import "./Home.css";
+// import {
+//   fetchHomeProperty,
+//   fetchPropertyTypes,
+// } from "../../store/PropertyAPI/propertyApiSlice";
+// import { useNavigate } from "react-router";
+
+// const Home = () => {
+//   const [query, setQuery] = useState("");
+//   const [filter, setFilter] = useState("option1");
+//   const dispatch = useDispatch();
+//   const Navigate = useNavigate();
+//   const { propertyHome, status, error, propertyTypes } = useSelector(
+//     (state) => state.property
+//   );
+
+//   const handleViewDeals = () => {
+//     Navigate("/property");
+//   };
+//   useEffect(() => {
+//     dispatch(fetchHomeProperty());
+//     dispatch(fetchPropertyTypes());
+//   }, [dispatch]);
+
+//   const handlePropertyClick = (id) => {
+//     Navigate(`/property/${id}`);
+//   };
+//   console.log(propertyTypes?.data);
+
+//   const handleSearch = () => {
+//     console.log(`Searching for "${query}" with filter "${filter}"`);
+//   };
+
+//   return (
+//     <div className="container position-relative">
+//       <div className="carousel-container">
+
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaBed, FaBath, FaChartArea } from "react-icons/fa";
@@ -5,33 +48,39 @@ import { GrLinkNext } from "react-icons/gr";
 import HeroImg from "../../assets/hero1.jpg";
 import Img from "../../assets/hero.jpg";
 import "./Home.css";
-import { fetchHomeProperty } from "../../store/PropertyAPI/propertyApiSlice";
+import {
+  fetchHomeProperty,
+  fetchPropertyTypes,
+} from "../../store/PropertyAPI/propertyApiSlice";
 import { useNavigate } from "react-router";
 
 const Home = () => {
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState("option1");
+  const [filter, setFilter] = useState(" ");
   const dispatch = useDispatch();
-  const Navigate = useNavigate();
-  const { propertyHome, status, error } = useSelector(
+  const navigate = useNavigate();
+  const { propertyHome, status, error, propertyTypes } = useSelector(
     (state) => state.property
   );
 
-  const handleViewDeals = () => {
-    Navigate("/property");
-  };
   useEffect(() => {
+    dispatch(fetchPropertyTypes());
     dispatch(fetchHomeProperty());
   }, [dispatch]);
 
+  const handleViewDeals = () => {
+    navigate("/property");
+  };
+
   const handlePropertyClick = (id) => {
-    Navigate(`/property/${id}`);
+    navigate(`/property/${id}`);
   };
 
   const handleSearch = () => {
-    console.log(`Searching for "${query}" with filter "${filter}"`);
+    navigate(
+      `/property?keyword=${encodeURIComponent(query)}&property_type=${filter}`
+    );
   };
-
   return (
     <div className="container position-relative">
       <div className="carousel-container">
@@ -112,46 +161,50 @@ const Home = () => {
             In Your Area!
           </p>
         </div>
-        <div
-          className="position-absolute bg-white p-3 px-4 py-4 pb-5 pt-4 rounded-4 border shadow"
-          style={{ top: "340px", left: "100px" }}
-        >
-          <p className="px-3 fw-bold">
-            Any specific deals you are looking for?
-          </p>
-          <div className="input-group">
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search..."
-              className="form-control rounded-start-pill"
-            />
-            <select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="form-select me-2 rounded-end-pill"
-              style={{ maxWidth: "80px" }}
-            >
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
-            </select>
-            <button
-              onClick={handleSearch}
-              className="btn btn-primary ms-3 px-3 py-3 rounded-circle"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <GrLinkNext />
-            </button>
-          </div>
+      </div>
+      <div
+        className="position-absolute bg-body-tertiary bg-opacity-50 px-5 py-5 pb-5 pt-4 rounded-4 border shadow"
+        style={{ top: "360px", left: "120px" }}
+      >
+        <p className="mx-2 mt-3 fs-4 pb-2">
+          Any specific deals you are looking for?
+        </p>
+        <div className="input-group">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search By City / Postal Code"
+            className="form-control rounded-start-pill py-4 px-5 fs-5"
+          />
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="form-select me-3 rounded-end-pill px-3 fs-5"
+            style={{ maxWidth: "110px" }}
+          >
+            <option value="all">All</option>
+            {Array.isArray(propertyTypes?.data) &&
+              propertyTypes?.data.map((type) => (
+                <option key={type.id} value={type.id}>
+                  {type.name}
+                </option>
+              ))}
+          </select>
+          <button
+            onClick={handleSearch}
+            className="btn btn-primary me-4 ms-4 ps-4 pe-3 rounded-circle"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <GrLinkNext size={22} />
+          </button>
         </div>
       </div>
-      <h2 className="my-4 mx-4 fw-bold fs-1">Featured Properties</h2>
+      <h2 className="my-4 mx-4 fw-bold fs-1">New Properties</h2>
       <div className="container mt-4">
         {status === "loading" && <p>Loading properties...</p>}
         {error && <p className="text-danger">{error}</p>}
@@ -159,12 +212,12 @@ const Home = () => {
           {propertyHome && propertyHome.data && propertyHome.data.length > 0 ? (
             propertyHome.data.map((property) => (
               <div className="col-md-3 mb-4" key={property.id}>
-                <div className="border rounded-3 card">
-                  <div
-                    className="card position-relative"
-                    onClick={() => handlePropertyClick(property.id)} // Add click handler to card
-                    style={{ cursor: "pointer" }} // Add cursor style to indicate clickable
-                  >
+                <div
+                  className="border rounded-3 card"
+                  onClick={() => handlePropertyClick(property.id)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className="card position-relative">
                     <img
                       src={
                         property.image
@@ -186,7 +239,6 @@ const Home = () => {
                       <span>{property.bedrooms || "N/A"} Beds</span>
                       <FaBath className="ms-3 me-2" />
                       <span>{property.bathrooms || "N/A"} Baths</span>
-
                       <FaChartArea className="ms-3 me-2" />
                       <span>{property.size || "N/A"} sq ft</span>
                     </div>
@@ -239,7 +291,7 @@ const Home = () => {
             }}
           >
             <source
-              src="https://stgps.appsndevs.com/digitalplatform/assets/homepageModalVideo-cb3j_YIE.mp4"
+              src="https://media.istockphoto.com/id/1411479325/video/aerial-real-estate-in-south-orange-county-california.mp4?s=mp4-640x640-is&k=20&c=qVHnUajX8TvKHWtsln7SWuAx_ofEiOhzDv8nNyG1agU="
               type="video/mp4"
             />
             Your browser does not support the video tag.

@@ -97,3 +97,14 @@ export const getUserInfoApi = async (id) => {
     throw error;
   }
 };
+
+// logout
+export const logoutAdminApi = async () => {
+  try {
+    const response = await axios.post(`${API_URL}api/admin/logout`);
+    return response.data;
+  } catch (error) {
+    console.error("Error in API:", error);
+    throw error;
+  }
+};

@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   createPropertyApi,
   detailsPropertyApi,
+  filterProperty,
   filterPropertyApi,
   homePropertyApi,
   propertyTypeApi,
@@ -31,6 +32,15 @@ export const addProperty = createAsyncThunk(
   }
 );
 
+// //filter search property
+// export const fetchFilteredProperties = createAsyncThunk(
+//   "properties/fetchFiltered",
+//   async (filters) => {
+//     const response = await filterProperty(filters);
+//     return response;
+//   }
+// );
+
 export const fetchPropertyTypes = createAsyncThunk(
   "property/fetchPropertyTypes",
   async (_, thunkAPI) => {
@@ -51,6 +61,7 @@ export const fetchHomeProperty = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await homePropertyApi();
+
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -105,6 +116,19 @@ const propertySlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
       })
+      // //fetchFilteredProperties
+      // .addCase(fetchFilteredProperties.pending, (state) => {
+      //   state.status = "loading";
+      // })
+      // .addCase(fetchFilteredProperties.fulfilled, (state, action) => {
+      //   state.status = "succeeded";
+      //   state.properties = action.payload;
+      // })
+      // .addCase(fetchFilteredProperties.rejected, (state, action) => {
+      //   state.status = "failed";
+      //   state.error = action.payload;
+      // })
+
       .addCase(fetchPropertyTypes.pending, (state) => {
         state.status = "loading";
       })

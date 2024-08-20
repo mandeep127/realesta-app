@@ -4,41 +4,39 @@ import { FaUser, FaLock } from "react-icons/fa";
 import Logo from "../../assets/admin.gif";
 import { useDispatch, useSelector } from "react-redux";
 import { AdminLogins } from "../../store/AdminLoginAPI/adminloginApiSlice";
+import { useNavigate } from "react-router";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [localError, setLocalError] = useState(""); // Local error state
+  const [error, setError] = useState("");
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, error, authData } = useSelector((state) => state.login);
+  const { loading, authData } = useSelector((state) => state.login);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLocalError(""); // Clear any previous local errors
+      setLocalError("");
       const response = await dispatch(
         AdminLogins({ email, password })
       ).unwrap();
       // Handle successful login
-      if (response) {
-        console.log("Login response:", response);
-        localStorage.setItem("adminToken", response.token);
-        localStorage.setItem("adminName", response.name);
+      if (response.data.token) {
+        console.log("Login response:", response.data.token);
+        localStorage.setItem("adminToken", response.data.token);
+        // localStorage.setItem("adminName", response.name);
         // Navigate to the dashboard or home page if needed
-        // navigate("/admin-dashboard");
-      }
-    } catch (err) {
-      // Handle errors from the API or Redux thunk
-      if (err?.errors) {
-        setLocalError(
-          Object.keys(err.errors)
-            .map((key) => err.errors[key].join(", "))
-            .join(", ")
-        );
+        navigate("/admin/dashboard");
       } else {
-        setLocalError("An unexpected error occurred.");
+        setError(response.message || "Invalid credentials. Please try again.");
       }
+    } catch (error) {
+      console.error("Login error:", error.message);
+      // toast.error("Failed to login. Please try again later.");
+      setError("Failed to login. Please try again later.");
     }
   };
 

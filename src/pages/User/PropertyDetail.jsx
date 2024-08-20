@@ -27,8 +27,8 @@ const PropertyDetail = () => {
 
   // Mortgage calculator state
   const [loanAmount, setLoanAmount] = useState(0);
-  const [interestRate, setInterestRate] = useState(3.5); // default interest rate
-  const [loanTerm, setLoanTerm] = useState(30); // in years
+  const [interestRate, setInterestRate] = useState(12.5); // default interest rate
+  const [loanTerm, setLoanTerm] = useState(12); // in years
   const [monthlyPayment, setMonthlyPayment] = useState(0);
 
   // Fetch property details
@@ -153,9 +153,8 @@ const PropertyDetail = () => {
             <p className="text-primary mb-3 fs-1">
               {property.address || "No Address"}
             </p>
-            <div className="d-flex flex-wrap align-items-center mb-4 bg-light rounded p-4 shadow-sm">
-              <div className="d-flex align-items-center me-4">
-                <FcHome size={24} />
+            <div className="d-flex flex-wrap align-items-center mb-4 bg-light rounded p-3 shadow-sm">
+              <div className="align-items-center me-2">
                 <div className="ms-3">
                   <div className="fw-light ">Property Type</div>
                   <div className="fw-bold fs-4">
@@ -165,22 +164,22 @@ const PropertyDetail = () => {
               </div>
 
               <div className="d-flex align-items-center me-4 ms-5">
-                <FaBed size={20} />
-                <div className="ms-3 fs-5">
+                <FaBed size={19} />
+                <div className="ms-2 fs-5">
                   {property.bedrooms || "N/A"} Beds
                 </div>
               </div>
 
               <div className="d-flex align-items-center me-4 ms-2">
-                <FaBath size={20} />
-                <div className="ms-3 fs-5">
+                <FaBath size={19} />
+                <div className="ms-2 fs-5">
                   {property.bathrooms || "N/A"} Baths
                 </div>
               </div>
 
               <div className="d-flex align-items-center  ms-2">
-                <FaChartArea size={20} />
-                <div className="ms-3 fs-5">{property.size || "N/A"} sq ft</div>
+                <FaChartArea size={19} />
+                <div className="ms-2 fs-5">{property.size || "N/A"} sq ft</div>
               </div>
             </div>
             <div>
