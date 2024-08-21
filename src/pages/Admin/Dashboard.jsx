@@ -48,7 +48,7 @@ const Dashboard = () => {
         <div>
           <h2>New Properties:</h2>
           <Table striped bordered hover>
-            <thead>
+            <thead className="table-dark">
               <tr>
                 <th>S.No</th>
                 <th>Address</th>
@@ -79,7 +79,7 @@ const Dashboard = () => {
                   <td>
                     <a
                       href={`/admin/property/${property.id}`}
-                      style={{ color: "blue" }}
+                      className="text-primary text-decoration-none"
                     >
                       <AiOutlineLink /> View Details
                     </a>

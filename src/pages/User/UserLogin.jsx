@@ -22,11 +22,11 @@ const UserLogin = () => {
 
     try {
       const response = await dispatch(Login({ email, password }));
+      console.log("Response:", response);
+      if (response && response.payload.data.token) {
+        console.log("Token:", response.payload.data.token);
+        localStorage.setItem("token", response.payload.data.token);
 
-      if (response && response.payload.success.token) {
-        console.log("Token:", response.payload);
-        localStorage.setItem("token", response.payload.success.token);
-        localStorage.setItem("name", response.payload.data.name);
         // toast.success("Logged in successfully");
         navigate("/");
       } else {

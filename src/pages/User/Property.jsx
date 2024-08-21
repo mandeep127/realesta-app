@@ -119,12 +119,13 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaBed, FaBath, FaChartArea, FaMapMarkerAlt } from "react-icons/fa";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { applyFilters } from "../../store/PropertyAPI/propertyApiSlice";
 
 const Property = () => {
   const dispatch = useDispatch();
   const Navigate = useNavigate();
+  const location = useLocation();
   const {
     properties = [],
     loading,
@@ -144,8 +145,23 @@ const Property = () => {
   const propertiesPerPage = 6;
 
   useEffect(() => {
-    dispatch(applyFilters({}));
-  }, [dispatch]);
+    // Extract query parameters from the URL
+    const queryParams = new URLSearchParams(location.search);
+    const keyword = queryParams.get("keyword") || "";
+    const propertyType = queryParams.get("property_type") || "";
+
+    // Set filters based on URL parameters
+    const newFilters = {
+      keyword: keyword || "",
+      property_type_id: propertyType || "",
+    };
+
+    dispatch(applyFilters(newFilters));
+  }, [dispatch, location.search]);
+
+  // useEffect(() => {
+  //   dispatch(applyFilters({}));
+  // }, [dispatch]);
 
   const handleTypeChange = (value, checked) => {
     const updatedTypes = checked
@@ -192,15 +208,20 @@ const Property = () => {
     }
 
     if (isValidNumber(filters.bedrooms)) {
-      filteredProperties = filteredProperties.filter(
-        (property) => property.bedrooms <= Number(filters.bedrooms)
-      );
+      filteredProperties = filteredProperties.filter((property) => {
+        return Number(property.bedrooms) === Number(filters.bedrooms);
+      });
     }
 
     if (isValidNumber(filters.bathrooms)) {
-      filteredProperties = filteredProperties.filter(
-        (property) => property.bathrooms <= Number(filters.bathrooms)
-      );
+      filteredProperties = filteredProperties.filter((property) => {
+        console.log(
+          "Checking bathrooms:",
+          property.bathrooms,
+          filters.bathrooms
+        );
+        return Number(property.bathrooms) === Number(filters.bathrooms);
+      });
     }
 
     return filteredProperties;
@@ -326,50 +347,59 @@ const Property = () => {
         </div>
         <div className="col-md-9">
           <div className="row">
-            {paginatedProperties.map((property) => (
-              <div className="col-md-4 mb-4" key={property.id}>
-                <div
-                  className="card border rounded-4"
-                  onClick={() => handlePropertyClick(property)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <img
-                    src={
-                      property.image
-                        ? `http://127.0.0.1:8000/${property.image}`
-                        : "https://via.placeholder.com/306x200"
-                    }
-                    className="card-img-top rounded-top-4"
-                    alt={property.address || "No address"}
-                    style={{
-                      height: "200px",
-                      objectFit: "cover",
-                    }}
-                  />
-                  <div className="card-body mb-2 mx-3">
-                    <p className="card-text text-primary fs-3">
-                      <strong>$ {property.price || "0.00"}</strong>
-                    </p>
-                    <div className="d-flex align-items-center bg-body-secondary px-3 py-3 rounded-2">
-                      <FaBed className="me-2" />
-                      <span>{property.bedrooms || "N/A"} Beds |</span>
-                      <FaBath className="ms-3 me-1" />
-                      <span>{property.bathrooms || "N/A"} Baths |</span>
-                      <FaChartArea className="ms-3 me-1" />
-                      <span>{property.size || "N/A"} sq ft</span>
-                    </div>
-                    <h5 className="card-title mt-3">
-                      {" "}
-                      <FaMapMarkerAlt size={13} className="me-2 text-primary" />
-                      {property.address || "No address"}
-                    </h5>
-                    {/* <p className="card-text ms-2">
+            {paginatedProperties && paginatedProperties.length > 0 ? (
+              paginatedProperties.map((property) => (
+                <div className="col-md-4 mb-4" key={property.id}>
+                  <div
+                    className="card border rounded-4"
+                    onClick={() => handlePropertyClick(property)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <img
+                      src={
+                        property.image
+                          ? `http://127.0.0.1:8000/${property.image}`
+                          : "https://via.placeholder.com/306x200"
+                      }
+                      className="card-img-top rounded-top-4"
+                      alt={property.address || "No address"}
+                      style={{
+                        height: "200px",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <div className="card-body mb-2 mx-3">
+                      <p className="card-text text-primary fs-3">
+                        <strong>$ {property.price || "0.00"}</strong>
+                      </p>
+                      <div className="d-flex align-items-center bg-body-secondary px-3 py-3 rounded-2">
+                        <FaBed className="me-2" />
+                        <span>{property.bedrooms || "N/A"} Beds |</span>
+                        <FaBath className="ms-3 me-1" />
+                        <span>{property.bathrooms || "N/A"} Baths |</span>
+                        <FaChartArea className="ms-3 me-1" />
+                        <span>{property.size || "N/A"} sq ft</span>
+                      </div>
+                      <h5 className="card-title mt-3">
+                        {" "}
+                        <FaMapMarkerAlt
+                          size={13}
+                          className="me-2 text-primary"
+                        />
+                        {property.address || "No address"}
+                      </h5>
+                      {/* <p className="card-text ms-2">
                       {property.description || "No description"}
                     </p> */}
+                    </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="col-md-12 text-center mt-5 pt-5">
+                <h3>There are no properties as per matching criteria.</h3>
               </div>
-            ))}
+            )}
           </div>
           <div className="text-center my-4">
             <nav>

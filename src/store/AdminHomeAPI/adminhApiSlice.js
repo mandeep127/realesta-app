@@ -8,6 +8,7 @@ import {
   getAllSellersApi,
   getAllUsersApi,
   getUserInfoApi,
+  logoutAdminApi,
   updatePropertyStatusApi,
 } from "./adminhApiServices";
 
@@ -129,6 +130,21 @@ export const fetchUserInfo = createAsyncThunk(
   }
 );
 
+//logoutAdminApi
+export const adminLogout = createAsyncThunk(
+  "admin/logout",
+  async (_, thunkAPI) => {
+    try {
+      const response = await logoutAdminApi();
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
 const AdminDashboardSlice = createSlice({
   name: "Dashboard",
   initialState,
@@ -209,6 +225,20 @@ const AdminDashboardSlice = createSlice({
         state.userDetails = action.payload;
       })
       .addCase(fetchUserInfo.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      //AdminLogout
+      .addCase(adminLogout.pending, (state) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(adminLogout.fulfilled, (state) => {
+        state.loading = false;
+        state.error = "";
+        state.authData = null;
+      })
+      .addCase(adminLogout.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
