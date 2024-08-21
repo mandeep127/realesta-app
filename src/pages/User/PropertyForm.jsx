@@ -85,8 +85,8 @@ const PropertyForm = () => {
     if (formData.image) {
       formDataToSend.append("image", formData.image);
     }
-    formData.subImages.forEach((image, index) => {
-      formDataToSend.append(`subImages[${index}]`, image);
+    formData.subImages.forEach((image) => {
+      formDataToSend.append("sub_images[]", image); // Corrected the key here
     });
 
     // Dispatch action to add property with formDataToSend
@@ -293,6 +293,20 @@ const PropertyForm = () => {
                 type="number"
                 name="bedrooms"
                 placeholder="Enter number of bedrooms"
+                value={formData.bedrooms}
+                onChange={handleChange}
+                required
+                min="0"
+              />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group controlId="bathrooms">
+              <Form.Label>Bathrooms:</Form.Label>
+              <Form.Control
+                type="number"
+                name="bathrooms"
+                placeholder="Enter number of bathrooms"
                 value={formData.bedrooms}
                 onChange={handleChange}
                 required
