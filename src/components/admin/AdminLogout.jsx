@@ -13,7 +13,6 @@ const AdminLogout = () => {
       await dispatch(adminLogout()).unwrap();
 
       localStorage.removeItem("token");
-      localStorage.removeItem("name");
 
       navigate("/");
     } catch (error) {

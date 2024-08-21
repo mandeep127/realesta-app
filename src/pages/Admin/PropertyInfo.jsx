@@ -111,7 +111,7 @@ const PropertyInfo = () => {
                 } rounded-pill`}
                 onClick={handleStatusChange}
               >
-                {isStatusActive ? "Deactivate Property" : "Activate Property"}
+                {isStatusActive ? "Deactivate Now" : "Activate Now"}
               </button>
             </div>
           )}

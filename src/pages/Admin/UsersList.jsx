@@ -10,6 +10,7 @@ import {
 } from "react-bootstrap";
 import { fetchUsers } from "../../store/AdminHomeAPI/adminhApiSlice";
 import { AiOutlineLink } from "react-icons/ai";
+import { format } from "date-fns";
 
 const UsersList = () => {
   const dispatch = useDispatch();
@@ -96,7 +97,7 @@ const UsersList = () => {
         <>
           <Table striped bordered hover responsive="lg">
             <thead className="table-dark">
-              <tr>
+              <tr className="fs-5">
                 <th>#</th>
                 <th>ID</th>
                 <th>Name</th>
@@ -114,7 +115,11 @@ const UsersList = () => {
                   <td>{user.name}</td>
                   <td>{user.email}</td>
                   <td>{user.phone}</td>
-                  <td>{new Date(user.created_at).toLocaleString()}</td>
+                  <td>
+                    {user.created_at
+                      ? format(new Date(user.created_at), "dd MMM yy, hh:mm a")
+                      : "N/A"}
+                  </td>
                   <td>
                     <a
                       href={`/admin/user/${user.id}`}

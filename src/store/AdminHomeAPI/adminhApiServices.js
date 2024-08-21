@@ -15,7 +15,9 @@ export const adminDashboardApi = async () => {
 // all properties
 export const AllPropertiesApi = async (page) => {
   try {
-    const response = await axios.get(`${API_URL}/admin/properties`);
+    const response = await axios.get(
+      `${API_URL}api/admin/properties?page=${page}`
+    );
     return response.data;
   } catch (error) {
     console.error("Error in API:", error);

@@ -207,22 +207,32 @@ const Property = () => {
       );
     }
 
-    if (isValidNumber(filters.bedrooms)) {
+    if (filters.bedrooms === "5+") {
+      filteredProperties = filteredProperties.filter(
+        (property) => property.bedrooms >= 5
+      );
+    } else if (isValidNumber(filters.bedrooms)) {
       filteredProperties = filteredProperties.filter((property) => {
         return Number(property.bedrooms) === Number(filters.bedrooms);
       });
     }
 
-    if (isValidNumber(filters.bathrooms)) {
-      filteredProperties = filteredProperties.filter((property) => {
-        console.log(
-          "Checking bathrooms:",
-          property.bathrooms,
-          filters.bathrooms
-        );
-        return Number(property.bathrooms) === Number(filters.bathrooms);
-      });
-    }
+    // if (isValidNumber(filters.bedrooms)) {
+    //   filteredProperties = filteredProperties.filter((property) => {
+    //     return Number(property.bedrooms) === Number(filters.bedrooms);
+    //   });
+    // }
+
+    // if (isValidNumber(filters.bathrooms)) {
+    //   filteredProperties = filteredProperties.filter((property) => {
+    //     console.log(
+    //       "Checking bathrooms:",
+    //       property.bathrooms,
+    //       filters.bathrooms
+    //     );
+    //     return Number(property.bathrooms) === Number(filters.bathrooms);
+    //   });
+    // }
 
     return filteredProperties;
   };
@@ -311,15 +321,21 @@ const Property = () => {
                     onChange={handleInputChange}
                   />
                 </div> */}
-                <div className="col-md-9 mb-2 ">
-                  <input
-                    type="number"
+                <div className="col-md-6 mb-2">
+                  <select
                     name="bedrooms"
                     className="form-control"
-                    placeholder="Bedrooms"
                     value={filters.bedrooms}
                     onChange={handleInputChange}
-                  />
+                  >
+                    <option value=""> bedrooms</option>
+                    {[1, 2, 3, 4].map((num) => (
+                      <option key={num} value={num}>
+                        {num}
+                      </option>
+                    ))}
+                    <option value="5+">5+</option>
+                  </select>
                 </div>
                 {/* //bathrooms */}
                 <p className="fw-bold fs-5 my-3">Bathrooms:</p>

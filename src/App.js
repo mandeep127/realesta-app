@@ -11,6 +11,7 @@ import PropertyForm from "./pages/User/PropertyForm";
 import PropertyDetail from "./pages/User/PropertyDetail";
 import Property from "./pages/User/Property";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import UserProfile from "./pages/User/UserProfile";
 
 function App() {
   return (
@@ -23,9 +24,9 @@ function App() {
         <Route
           path="*"
           element={
-            <ProtectedRoute>
-              <AdminLayout />
-            </ProtectedRoute>
+            // <ProtectedRoute>
+            <AdminLayout />
+            // </ProtectedRoute>
           }
         />
 
@@ -65,6 +66,16 @@ function App() {
             <>
               <Layouts>
                 <Property />
+              </Layouts>
+            </>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <>
+              <Layouts>
+                <UserProfile />
               </Layouts>
             </>
           }

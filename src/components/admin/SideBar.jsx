@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { FaTachometerAlt, FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaTachometerAlt,
+  FaUser,
+  FaCog,
+  FaSignOutAlt,
+  FaHome,
+} from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import "./Header.css";
 import Img from "../../assets/dark.gif";
@@ -29,6 +35,18 @@ const Sidebar = () => {
           onClick={() => handleNavClick("/admin/dashboard")}
         >
           <FaTachometerAlt className="me-2" /> Dashboard
+        </NavLink>
+
+        <NavLink
+          to="/admin/property"
+          className={({ isActive }) =>
+            `nav-link d-flex fw-bold align-items-center mb-2 ${
+              isActive ? "active" : ""
+            }`
+          }
+          onClick={() => handleNavClick("/admin/property")}
+        >
+          <FaHome className="me-2" /> Properties
         </NavLink>
 
         <NavLink

@@ -19,7 +19,7 @@ const Header = () => {
             <span className="fw-bolder me-2">Profile</span>
           </Dropdown.Toggle>
           <Dropdown.Menu align="end">
-            <Dropdown.Item href="#profile" className="fw-bolder">
+            <Dropdown.Item href="/admin/profile" className="fw-bolder">
               Profile
             </Dropdown.Item>
             <Dropdown.Item href="#settings" className="fw-bolder">

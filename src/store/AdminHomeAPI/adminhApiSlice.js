@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   adminDashboardApi,
   adminPropertyInfoApi,
+  AllPropertiesApi,
   detailPropertyApi,
   getAllApi,
   getAllBuyerApi,
@@ -22,6 +23,7 @@ const initialState = {
   usersSeller: [],
   pagination: {},
   userDetails: [],
+  property: [],
 };
 
 export const AdminDashboard = createAsyncThunk(
@@ -29,6 +31,22 @@ export const AdminDashboard = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await adminDashboardApi();
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+//AllPropertiesApi
+export const FetchAllProperty = createAsyncThunk(
+  "admin/fetch-properties",
+  async (page, thunkAPI) => {
+    try {
+      const response = await AllPropertiesApi(page);
+      console.log("API Response:tt", response);
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -164,6 +182,26 @@ const AdminDashboardSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      //FetchAllProperty
+      .addCase(FetchAllProperty.pending, (state) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(FetchAllProperty.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+        state.property = action.payload.data.data;
+        state.pagination = {
+          currentPage: action.payload.data.current_page,
+          lastPage: action.payload.data.last_page,
+          total: action.payload.data.total,
+        };
+      })
+      .addCase(FetchAllProperty.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
       .addCase(fetchDetailProperty.pending, (state) => {
         state.status = "loading";
       })

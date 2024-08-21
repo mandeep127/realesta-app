@@ -314,7 +314,7 @@ const PropertyForm = () => {
               />
             </Form.Group>
           </Col>
-          <Col md={4}>
+          {/* <Col md={4}>
             <Form.Group controlId="bathrooms">
               <Form.Label>Bathrooms:</Form.Label>
               <Form.Control
@@ -327,7 +327,7 @@ const PropertyForm = () => {
                 min="0"
               />
             </Form.Group>
-          </Col>
+          </Col> */}
           <Col md={4}>
             <Form.Group controlId="size">
               <Form.Label>Size (sq ft):</Form.Label>

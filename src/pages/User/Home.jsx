@@ -47,6 +47,7 @@ import { FaBed, FaBath, FaChartArea } from "react-icons/fa";
 import { GrLinkNext } from "react-icons/gr";
 import HeroImg from "../../assets/hero1.jpg";
 import Img from "../../assets/hero.jpg";
+import Loading from "../../assets/wait.gif";
 import "./Home.css";
 import {
   fetchHomeProperty,
@@ -205,8 +206,11 @@ const Home = () => {
         </div>
       </div>
       <h2 className="my-4 mx-4 fw-bold fs-1">New Properties</h2>
+
       <div className="container mt-4">
-        {status === "loading" && <p>Loading properties...</p>}
+        {status === "loading" && (
+          <img src={Loading} className="rounded mx-auto d-block pt-3" />
+        )}
         {error && <p className="text-danger">{error}</p>}
         <div className="row">
           {propertyHome && propertyHome.data && propertyHome.data.length > 0 ? (

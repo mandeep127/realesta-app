@@ -88,103 +88,109 @@ const PropertyDetail = () => {
       </div>
 
       {property && (
-  <div className="row">
-    {/* Image Gallery */}
-    <div className="col-md-7 mb-4">
-      <Carousel
-        id="imageSlider"
-        activeIndex={activeIndex}
-        onSelect={handleSelect}
-        pause={false}
-        interval={2000}
-        nextIcon={
-          <span
-            className="carousel-control-next-icon bg-black rounded-1"
-            style={{ marginLeft: "-73px" }}
-          />
-        }
-        prevIcon={
-          <span
-            className="carousel-control-prev-icon bg-black rounded-1"
-            style={{ marginRight: "-73px" }}
-          />
-        }
-      >
-        {/* First Image from Property Table */}
-        {property.image && (
-          <Carousel.Item key="main-image">
-            <Image
-              width="100%"
-              height="400"
-              src={`http://127.0.0.1:8000/${property.image}`}
-              className="d-block mx-auto rounded-3"
-              alt="Main Property Image"
-              style={{ objectFit: "cover" }}
-              fluid
-            />
-          </Carousel.Item>
-        )}
+        <div className="row">
+          {/* Image Gallery */}
+          <div className="col-md-6 mb-4">
+            <Carousel
+              id="imageSlider"
+              activeIndex={activeIndex}
+              onSelect={handleSelect}
+              pause={false}
+              interval={2000}
+              nextIcon={
+                <span
+                  className="carousel-control-next-icon bg-black rounded-1"
+                  style={{ marginLeft: "-73px" }}
+                />
+              }
+              prevIcon={
+                <span
+                  className="carousel-control-prev-icon bg-black rounded-1"
+                  style={{ marginRight: "-73px" }}
+                />
+              }
+            >
+              {/* First Image from Property Table */}
+              {property.image && (
+                <Carousel.Item key="main-image">
+                  <Image
+                    width="100%"
+                    height="400"
+                    src={`http://127.0.0.1:8000/${property.image}`}
+                    className="d-block mx-auto rounded-3"
+                    alt="Main Property Image"
+                    style={{
+                      width: "600px",
+                      height: "360px",
+                      objectFit: "cover",
+                    }}
+                    fluid
+                  />
+                </Carousel.Item>
+              )}
 
-        {/* Sub Images from Property Sub Images Table */}
-        {propertyImages.map((image, index) => (
-          <Carousel.Item key={index}>
-            <Image
-              width="100%"
-              height="400"
-              src={`http://127.0.0.1:8000/${image.sub_images}`}
-              className="d-block mx-auto rounded-3"
-              alt={`Slide ${index + 1}`}
-              style={{ objectFit: "cover" }}
-              fluid
-            />
-          </Carousel.Item>
-        ))}
-      </Carousel>
+              {/* Sub Images from Property Sub Images Table */}
+              {propertyImages.map((image, index) => (
+                <Carousel.Item key={index}>
+                  <Image
+                    src={`http://127.0.0.1:8000/${image.sub_images}`}
+                    className="d-block mx-auto rounded-3"
+                    alt={`Slide ${index + 1}`}
+                    style={{
+                      width: "600px",
+                      height: "360px",
+                      objectFit: "cover",
+                    }}
+                    fluid
+                  />
+                </Carousel.Item>
+              ))}
+            </Carousel>
 
-      {/* Thumbnail Previews */}
-      <div className="d-flex justify-content-center mb-3 pt-4">
-        {/* Thumbnail for Main Image */}
-        {property.image && (
-          <a
-            key="main-thumbnail"
-            className={`border mx-1 rounded-2 imgHover ${
-              activeIndex === 0 ? "active" : ""
-            }`}
-            onClick={() => setActiveIndex(0)}
-          >
-            <Image
-              width="60"
-              height="60"
-              className="rounded-2"
-              src={`http://127.0.0.1:8000/${property.image}`}
-              style={{ objectFit: "cover" }}
-            />
-          </a>
-        )}
+            {/* Thumbnail Previews */}
+            <div className="d-flex justify-content-center mb-3 pt-4">
+              {/* Thumbnail for Main Image */}
+              {property.image && (
+                <a
+                  key="main-thumbnail"
+                  className={`border mx-1 rounded-2 imgHover ${
+                    activeIndex === 0 ? "active" : ""
+                  }`}
+                  onClick={() => setActiveIndex(0)}
+                >
+                  <Image
+                    width="60"
+                    height="60"
+                    className="rounded-2"
+                    src={`http://127.0.0.1:8000/${property.image}`}
+                    style={{ objectFit: "cover" }}
+                  />
+                </a>
+              )}
 
-        {/* Thumbnails for Sub Images */}
-        {propertyImages.map((image, index) => (
-          <a
-            key={index + 1}
-            className={`border mx-1 rounded-2 imgHover ${
-              activeIndex === index + 1 ? "active" : ""
-            }`}
-            onClick={() => setActiveIndex(index + 1)}
-          >
-            <Image
-              width="60"
-              height="60"
-              className="rounded-2"
-              src={`http://127.0.0.1:8000/${image.sub_images}`}
-              style={{ objectFit: "cover" }}
-            />
-          </a>
-        ))}
-      </div>
-    </div>
+              {/* Thumbnails for Sub Images */}
+              {propertyImages.map((image, index) => (
+                <a
+                  key={index + 1}
+                  className={`border mx-1 rounded-2 imgHover ${
+                    activeIndex === index + 1 ? "active" : ""
+                  }`}
+                  onClick={() => setActiveIndex(index + 1)}
+                >
+                  <Image
+                    width="60"
+                    height="60"
+                    className="rounded-2"
+                    src={`http://127.0.0.1:8000/${image.sub_images}`}
+                    style={{ objectFit: "cover" }}
+                  />
+                </a>
+              ))}
+            </div>
+          </div>
 
           {/* Property Details */}
-          <div className="col-md-5 pt-3 px-5">
+          <div className="col-md-6 pt-3 px-5">
             <p>
               <strong className="text-dark fs-3 ">
                 $ {property.price || "0.00"}
@@ -194,10 +200,10 @@ const PropertyDetail = () => {
               {property.address || "No Address"}
             </p>
             <div className="d-flex flex-wrap align-items-center mb-4 bg-light rounded p-3 shadow-sm">
-              <div className="align-items-center me-2">
+              <div className="align-items-center me-1">
                 <div className="ms-3">
                   <div className="fw-light ">Property Type</div>
-                  <div className="fw-bold fs-4">
+                  <div className="fw-bold fs-5">
                     {propertyType[property.property_type_id] || "Unknown"}
                   </div>
                 </div>
@@ -229,18 +235,18 @@ const PropertyDetail = () => {
               </p>
             </div>
 
-      <p>
-        <strong>
-          Location: {property.city || "N/A"}, {property.state || "N/A"}
-        </strong>
-      </p>
-      <p className="text-muted mb-4">
-        <MdOutlineDescription />{" "}
-        {property.description || "No description available."}
-      </p>
-    </div>
-  </div>
-)}
+            <p>
+              <strong>
+                Location: {property.city || "N/A"}, {property.state || "N/A"}
+              </strong>
+            </p>
+            <p className="text-muted mb-4">
+              <MdOutlineDescription />{" "}
+              {property.description || "No description available."}
+            </p>
+          </div>
+        </div>
+      )}
 
       <h4 className="py-4 ps-5 text-light bg-primary rounded-5 rounded-bottom-0">
         Tools
