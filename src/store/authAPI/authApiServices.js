@@ -2,12 +2,12 @@ import axios from "axios";
 
 const API_URL = "http://127.0.0.1:8000/";
 
-// const axiosInstance = axios.create({
-//   baseURL: API_URL,
-//   headers: {
-//     Authorization: `Bearer ${localStorage.getItem("token")}`,
-//   },
-// });
+const axiosInstance = axios.create({
+  baseURL: API_URL,
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+  },
+});
 
 export const loginUserApi = async (data) => {
   try {
@@ -31,12 +31,7 @@ export const registerUserApi = async (data) => {
 
 export const logoutUserApi = async (data) => {
   try {
-    const token = localStorage.getItem("token");
-    const response = await axios.post(`${API_URL}api/logout`, null, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axiosInstance.post(`${API_URL}api/logout`);
     return response;
   } catch (error) {
     console.error("Error in Logout API:", error);
@@ -57,6 +52,16 @@ export const forgotPasswordApi = async (data) => {
 export const resetPasswordApi = async (data) => {
   try {
     const response = await axios.post(`${API_URL}api/reset-password/`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error in reset Password API:", error);
+    throw error;
+  }
+};
+
+export const userProfileApi = async (data) => {
+  try {
+    const response = await axiosInstance.get(`${API_URL}api/profile`);
     return response.data;
   } catch (error) {
     console.error("Error in reset Password API:", error);

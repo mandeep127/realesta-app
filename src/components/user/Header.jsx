@@ -1,17 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Nav, Navbar, Button } from "react-bootstrap";
 import "./style.css";
 import Logo from "../../assets/logo.svg";
 
 const Header = () => {
-  // Mock authentication state
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("user_token");
+    const storedUsername = localStorage.getItem("User_Name");
+
+    if (token) {
+      setIsAuthenticated(true);
+      setUsername(storedUsername || "User");
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, []);
 
   return (
     <>
-      <div className="top-bar text-center py-3 custom-front">
-        Meet Your Personalized Assistant: Expert Guidance, Contact Us!
-        <Button className="bg-white rounded-pill ms-3 btn-blue-text btn-small">
+      <div className="top-bar text-center py-4 ">
+        <span className="fs-6">
+          Meet Your Personalized Assistant: Expert Guidance, Contact Us!
+        </span>
+        <Button className="bg-white rounded-pill ms-3 py-2 px-3 btn-blue-text fw-bold ">
           Beta User Feedback
         </Button>
       </div>
@@ -28,14 +42,19 @@ const Header = () => {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
               {isAuthenticated ? (
-                <Nav.Link href="/profile">
-                  <Button
-                    variant="outline-primary"
-                    className="rounded-pill fw-bold px-5 py-2"
-                  >
-                    Profile
-                  </Button>
-                </Nav.Link>
+                <>
+                  <Navbar.Text className="me-2 pt-3">
+                    Welcome, {username}!
+                  </Navbar.Text>
+                  <Nav.Link href="/profile">
+                    <Button
+                      variant="outline-primary"
+                      className="rounded-pill fw-bold px-5 py-2"
+                    >
+                      Profile
+                    </Button>
+                  </Nav.Link>
+                </>
               ) : (
                 <>
                   <Nav.Link href="/login">

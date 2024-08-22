@@ -205,7 +205,7 @@ const Home = () => {
           </button>
         </div>
       </div>
-      <h2 className="my-4 mx-4 fw-bold fs-1">New Properties</h2>
+      <h2 className=" mx-4 fw-bold fs-1">New Deals In Your Area</h2>
 
       <div className="container mt-4">
         {status === "loading" && (
@@ -217,18 +217,18 @@ const Home = () => {
             propertyHome.data.map((property) => (
               <div className="col-md-3 mb-4" key={property.id}>
                 <div
-                  className="border rounded-3 card"
+                  className="border rounded-4 card"
                   onClick={() => handlePropertyClick(property.id)}
                   style={{ cursor: "pointer" }}
                 >
-                  <div className="card position-relative">
+                  <div className=" position-relative">
                     <img
                       src={
                         property.image
                           ? `http://127.0.0.1:8000/${property.image}`
                           : "https://via.placeholder.com/306x200"
                       }
-                      className="card-img-top"
+                      className="card-img-top rounded-top-4 rounded-bottom-0"
                       alt={property.address || "No address"}
                       style={{
                         width: "306px",
@@ -247,12 +247,27 @@ const Home = () => {
                       <span>{property.size || "N/A"} sq ft</span>
                     </div>
                     <hr />
-                    <h5 className="card-title">
+                    {/* <h5 className="card-title">
                       {property.address || "No address"}
+                    </h5> */}
+                    <h5 className="card-text">
+                      {property.address
+                        ? property.address.split(" ").slice(0, 5).join(" ") +
+                          (property.address.split(" ").length > 5 ? "..." : "")
+                        : "No address"}
                     </h5>
                     <p className="card-text">
-                      {property.description || "No description"}
+                      {property.description
+                        ? property.description
+                            .split(" ")
+                            .slice(0, 10)
+                            .join(" ") +
+                          (property.description.split(" ").length > 10
+                            ? "..."
+                            : "")
+                        : "No description"}
                     </p>
+
                     <p className="card-text">
                       <strong>${property.price || "0.00"}</strong>
                     </p>

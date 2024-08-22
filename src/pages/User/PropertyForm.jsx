@@ -6,7 +6,7 @@ import {
   addProperty,
 } from "../../store/PropertyAPI/propertyApiSlice";
 import "./style.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoCaretBackCircle } from "react-icons/io5";
 
 const PropertyForm = () => {
@@ -29,13 +29,19 @@ const PropertyForm = () => {
   });
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { status, error, propertyTypes } = useSelector(
     (state) => state.property
   );
 
   useEffect(() => {
-    dispatch(fetchPropertyTypes());
-  }, [dispatch]);
+    const token = localStorage.getItem("user_token");
+    if (!token) {
+      navigate("/login");
+    } else {
+      dispatch(fetchPropertyTypes());
+    }
+  }, [dispatch, navigate]);
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -75,21 +81,18 @@ const PropertyForm = () => {
       price: parseFloat(formData.price),
     };
 
-    // Create FormData object to handle multipart form data
     const formDataToSend = new FormData();
     Object.entries(formDataWithNumbersOnly).forEach(([key, value]) => {
       formDataToSend.append(key, value);
     });
 
-    // Append main image and sub-images to FormData
     if (formData.image) {
       formDataToSend.append("image", formData.image);
     }
     formData.subImages.forEach((image) => {
-      formDataToSend.append("sub_images[]", image); // Corrected the key here
+      formDataToSend.append("sub_images[]", image);
     });
 
-    // Dispatch action to add property with formDataToSend
     try {
       await dispatch(addProperty(formDataToSend));
       alert("Property added successfully!");

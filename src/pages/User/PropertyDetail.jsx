@@ -98,16 +98,10 @@ const PropertyDetail = () => {
               pause={false}
               interval={2000}
               nextIcon={
-                <span
-                  className="carousel-control-next-icon bg-black rounded-1"
-                  style={{ marginLeft: "-73px" }}
-                />
+                <span className="carousel-control-next-icon bg-black rounded-1" />
               }
               prevIcon={
-                <span
-                  className="carousel-control-prev-icon bg-black rounded-1"
-                  style={{ marginRight: "-73px" }}
-                />
+                <span className="carousel-control-prev-icon bg-black rounded-1" />
               }
             >
               {/* First Image from Property Table */}

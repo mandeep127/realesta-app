@@ -2,10 +2,28 @@ import axios from "axios";
 
 const API_URL = "http://127.0.0.1:8000/";
 
+const axiosInstance = axios.create({
+  baseURL: API_URL,
+});
+
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Admin Dashboard API Call
 export const adminDashboardApi = async () => {
   try {
-    const response = await axios.get(`${API_URL}api/admin/home`);
+    const response = await axiosInstance.get(`${API_URL}api/admin/home`);
+
     return response.data;
   } catch (error) {
     console.error("Error in API:", error);
@@ -15,7 +33,7 @@ export const adminDashboardApi = async () => {
 // all properties
 export const AllPropertiesApi = async (page) => {
   try {
-    const response = await axios.get(
+    const response = await axiosInstance.get(
       `${API_URL}api/admin/properties?page=${page}`
     );
     return response.data;
@@ -40,7 +58,7 @@ export const AllPropertiesApi = async (page) => {
 
 export const detailPropertyApi = async (data) => {
   try {
-    const response = await axios.get(
+    const response = await axiosInstance.get(
       `${API_URL}api/admin/property/${data}`,
       data
     );
@@ -54,7 +72,7 @@ export const detailPropertyApi = async (data) => {
 // Update property status
 export const updatePropertyStatusApi = async ({ id, status }) => {
   try {
-    const response = await axios.get(
+    const response = await axiosInstance.get(
       `${API_URL}api/admin/property/${id}/status/`,
       {
         params: { status }, // Pass status as a query parameter
@@ -70,7 +88,7 @@ export const updatePropertyStatusApi = async ({ id, status }) => {
 // Fetch user
 export const getAllApi = async () => {
   try {
-    const response = await axios.get(`${API_URL}api/admin/users`);
+    const response = await axiosInstance.get(`${API_URL}api/admin/users`);
     return response.data;
   } catch (error) {
     console.error("Error in API:", error);
@@ -92,7 +110,7 @@ export const getAllApi = async () => {
 // fetch specified user information
 export const getUserInfoApi = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}api/admin/user/${id}`);
+    const response = await axiosInstance.get(`${API_URL}api/admin/user/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error in API:", error);
@@ -103,7 +121,7 @@ export const getUserInfoApi = async (id) => {
 // logout
 export const logoutAdminApi = async () => {
   try {
-    const response = await axios.post(`${API_URL}api/admin/logout`);
+    const response = await axiosInstance.post(`${API_URL}api/admin/logout`);
     return response.data;
   } catch (error) {
     console.error("Error in API:", error);

@@ -25,8 +25,9 @@ const UserLogin = () => {
       console.log("Response:", response);
       if (response && response.payload.data.token) {
         console.log("Token:", response.payload.data.token);
-        localStorage.setItem("token", response.payload.data.token);
-
+        localStorage.setItem("user_token", response.payload.data.token);
+        localStorage.setItem("User_Name", response.payload.data.user.name);
+        console.log("User_Name:", response.payload.data.user.name);
         // toast.success("Logged in successfully");
         navigate("/");
       } else {

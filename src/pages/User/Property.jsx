@@ -217,6 +217,16 @@ const Property = () => {
       });
     }
 
+    if (filters.bathrooms === "5+") {
+      filteredProperties = filteredProperties.filter(
+        (property) => property.bathrooms >= 5
+      );
+    } else if (isValidNumber(filters.bathrooms)) {
+      filteredProperties = filteredProperties.filter((property) => {
+        return Number(property.bathrooms) === Number(filters.bathrooms);
+      });
+    }
+
     // if (isValidNumber(filters.bedrooms)) {
     //   filteredProperties = filteredProperties.filter((property) => {
     //     return Number(property.bedrooms) === Number(filters.bedrooms);
@@ -321,7 +331,7 @@ const Property = () => {
                     onChange={handleInputChange}
                   />
                 </div> */}
-                <div className="col-md-6 mb-2">
+                <div className="col-md-9 mb-2">
                   <select
                     name="bedrooms"
                     className="form-control"
@@ -340,6 +350,22 @@ const Property = () => {
                 {/* //bathrooms */}
                 <p className="fw-bold fs-5 my-3">Bathrooms:</p>
                 <div className="col-md-9 mb-2">
+                  <select
+                    name="bathrooms"
+                    className="form-control"
+                    value={filters.bathrooms}
+                    onChange={handleInputChange}
+                  >
+                    <option value=""> bathrooms</option>
+                    {[1, 2, 3, 4].map((num) => (
+                      <option key={num} value={num}>
+                        {num}
+                      </option>
+                    ))}
+                    <option value="5+">5+</option>
+                  </select>
+                </div>
+                {/* <div className="col-md-9 mb-2">
                   <input
                     type="number"
                     name="bathrooms"
@@ -348,7 +374,7 @@ const Property = () => {
                     value={filters.bathrooms}
                     onChange={handleInputChange}
                   />
-                </div>
+                </div> */}
               </div>
             </div>
             {/* 

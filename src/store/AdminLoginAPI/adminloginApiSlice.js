@@ -1,18 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { adminLoginApi } from "./adminloginApiServices";
-import { loginUserApi } from "../authAPI/authApiServices";
 
 const initialState = {
   loading: false,
   error: "",
-  authData: null,
+  authData: "",
 };
 
 export const AdminLogins = createAsyncThunk(
   "admin/login",
   async (credentials, thunkAPI) => {
     try {
-      const response = await loginUserApi(credentials);
+      const response = await adminLoginApi(credentials);
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -23,7 +22,7 @@ export const AdminLogins = createAsyncThunk(
 );
 
 const AdminLoginSlice = createSlice({
-  name: "adminlogin",
+  name: "login",
   initialState,
   reducers: {},
   extraReducers: (builder) => {

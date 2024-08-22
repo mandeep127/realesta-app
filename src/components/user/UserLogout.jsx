@@ -1,31 +1,34 @@
-import React from "react";
+// Logout.js
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { userLogout } from "./apiSlice";
+import { useDispatch } from "react-redux";
+import { Logout } from "../../store/authAPI/authApiSlice";
 
 const UserLogout = () => {
   const navigate = useNavigate();
-  const [logout, { isLoading, isError, isSuccess }] = userLogout();
+  const dispatch = useDispatch();
 
-  const handleLogout = async () => {
-    try {
-      await logout().unwrap();
+  useEffect(() => {
+    const performLogout = async () => {
+      try {
+        await dispatch(Logout()).unwrap();
 
-      localStorage.removeItem("token");
-      localStorage.removeItem("name");
-      navigate("/login");
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
+        localStorage.removeItem("user_token");
+        localStorage.removeItem("User_Name");
+
+        navigate("/");
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
+    };
+
+    performLogout();
+  }, [dispatch, navigate]);
 
   return (
-    <button
-      onClick={handleLogout}
-      className="btn btn-danger"
-      disabled={isLoading}
-    >
-      {isLoading ? "Logging out..." : "Logout"}
-    </button>
+    <div className="text-center mt-5">
+      <p>Logging out...</p>
+    </div>
   );
 };
 

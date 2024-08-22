@@ -27,9 +27,12 @@ const Dashboard = () => {
   }
 
   if (error) {
+    // Check if error is an object and has a message property
+    const errorMessage =
+      typeof error === "object" && error.message ? error.message : error;
     return (
       <Container className="mt-5">
-        <Alert variant="danger">Error: {error}</Alert>
+        <Alert variant="danger">Error: {errorMessage}</Alert>
       </Container>
     );
   }

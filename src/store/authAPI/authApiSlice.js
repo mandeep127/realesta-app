@@ -5,6 +5,7 @@ import {
   logoutUserApi,
   registerUserApi,
   resetPasswordApi,
+  userProfileApi,
 } from "./authApiServices";
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
   error: "",
   authData: null,
   register: "",
+  Profile: null,
 };
 
 export const Login = createAsyncThunk(
@@ -72,6 +74,22 @@ export const ResetPassword = createAsyncThunk(
   async (credentials, thunkAPI) => {
     try {
       const response = await resetPasswordApi(credentials);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+//userProfileApi
+export const userProfile = createAsyncThunk(
+  "user/userProfile",
+  async (_, thunkAPI) => {
+    try {
+      const response = await userProfileApi();
+      console.log("response", response);
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -149,6 +167,20 @@ const loginSlice = createSlice({
         state.authData = action.payload.authData;
       })
       .addCase(ResetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      //UserProfile
+      .addCase(userProfile.pending, (state) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(userProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+        state.Profile = action.payload.data;
+      })
+      .addCase(userProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

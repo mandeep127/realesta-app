@@ -12,6 +12,8 @@ import PropertyDetail from "./pages/User/PropertyDetail";
 import Property from "./pages/User/Property";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import UserProfile from "./pages/User/UserProfile";
+import UserLogout from "./components/user/UserLogout";
+import UserChangePass from "./pages/User/UserChangePass";
 
 function App() {
   return (
@@ -20,13 +22,14 @@ function App() {
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/login" element={<UserLogin />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/logout" element={<UserLogout />} />
 
         <Route
           path="*"
           element={
-            // <ProtectedRoute>
-            <AdminLayout />
-            // </ProtectedRoute>
+            <ProtectedRoute>
+              <AdminLayout />
+            </ProtectedRoute>
           }
         />
 
@@ -76,6 +79,17 @@ function App() {
             <>
               <Layouts>
                 <UserProfile />
+              </Layouts>
+            </>
+          }
+        />
+
+        <Route
+          path="/change-password"
+          element={
+            <>
+              <Layouts>
+                <UserChangePass />
               </Layouts>
             </>
           }

@@ -2,6 +2,13 @@ import axios from "axios";
 
 const API_URL = "http://127.0.0.1:8000/";
 
+const axiosInstance = axios.create({
+  baseURL: API_URL,
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+});
+
 // Fetch all property types
 export const propertyTypeApi = async (data) => {
   try {
@@ -40,7 +47,10 @@ export const homePropertyApi = async (data) => {
 // Create property
 export const createPropertyApi = async (data) => {
   try {
-    const response = await axios.post(`${API_URL}api/add-property`, data);
+    const response = await axiosInstance.post(
+      `${API_URL}api/add-property`,
+      data
+    );
     return response.data;
   } catch (error) {
     console.error("Error in API:", error);
