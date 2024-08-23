@@ -54,3 +54,10 @@
   color: #000000;
   border-radius: 5px;
 }
+
+.lin{
+  font-size: 16px;
+  color: #ccc;
+  transition: background-color 0.3s, color 0.3s;
+  text-decoration: none;
+}

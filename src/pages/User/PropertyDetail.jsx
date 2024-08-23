@@ -4,10 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaBed, FaBath, FaChartArea } from "react-icons/fa";
 import { fetchDetailsProperty } from "../../store/PropertyAPI/propertyApiSlice";
 import { Carousel, Image } from "react-bootstrap";
-
 import "./PropertyDetail.css";
 import { IoCaretBackCircle } from "react-icons/io5";
-import { FcHome } from "react-icons/fc";
 import { AiFillHome } from "react-icons/ai";
 import { MdOutlineDescription } from "react-icons/md";
 
@@ -26,9 +24,10 @@ const PropertyDetail = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   // Mortgage calculator state
-  const [loanAmount, setLoanAmount] = useState(0);
-  const [interestRate, setInterestRate] = useState(12.5); // default interest rate
-  const [loanTerm, setLoanTerm] = useState(12); // in years
+  const [loanAmount, setLoanAmount] = useState(1234);
+  const [downPayment, setDownPayment] = useState(234);
+  const [interestRate, setInterestRate] = useState(24);
+  const [loanTerm, setLoanTerm] = useState(2);
   const [monthlyPayment, setMonthlyPayment] = useState(0);
 
   // Fetch property details
@@ -36,17 +35,19 @@ const PropertyDetail = () => {
     dispatch(fetchDetailsProperty(id));
   }, [id, dispatch]);
 
-  // Calculate mortgage payment
+  // Update loan amount and down payment based on fetched property details
   useEffect(() => {
     if (propertyDetails?.data?.property) {
       const propertyPrice = propertyDetails.data.property.price || 0;
       setLoanAmount(propertyPrice);
+      setDownPayment(0); // Reset down payment when property price changes
     }
   }, [propertyDetails]);
 
+  // Calculate mortgage payment
   useEffect(() => {
     const calculateMortgage = () => {
-      const principal = parseFloat(loanAmount);
+      const principal = parseFloat(loanAmount) - parseFloat(downPayment);
       const interest = parseFloat(interestRate) / 100 / 12;
       const numberOfPayments = parseFloat(loanTerm) * 12;
 
@@ -57,7 +58,7 @@ const PropertyDetail = () => {
     };
 
     calculateMortgage();
-  }, [loanAmount, interestRate, loanTerm]);
+  }, [loanAmount, downPayment, interestRate, loanTerm]);
 
   if (status === "loading") return <p className="text-center">Loading...</p>;
   if (error) return <p className="text-center text-danger">{error}</p>;
@@ -81,7 +82,7 @@ const PropertyDetail = () => {
               <Link to="/">Home</Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
-              <Link to="/property/">property</Link>
+              <Link to="/property/">Property</Link>
             </li>
           </ol>
         </nav>
@@ -104,7 +105,6 @@ const PropertyDetail = () => {
                 <span className="carousel-control-prev-icon bg-black rounded-1" />
               }
             >
-              {/* First Image from Property Table */}
               {property.image && (
                 <Carousel.Item key="main-image">
                   <Image
@@ -122,8 +122,6 @@ const PropertyDetail = () => {
                   />
                 </Carousel.Item>
               )}
-
-              {/* Sub Images from Property Sub Images Table */}
               {propertyImages.map((image, index) => (
                 <Carousel.Item key={index}>
                   <Image
@@ -141,9 +139,7 @@ const PropertyDetail = () => {
               ))}
             </Carousel>
 
-            {/* Thumbnail Previews */}
             <div className="d-flex justify-content-center mb-3 pt-4">
-              {/* Thumbnail for Main Image */}
               {property.image && (
                 <a
                   key="main-thumbnail"
@@ -161,8 +157,6 @@ const PropertyDetail = () => {
                   />
                 </a>
               )}
-
-              {/* Thumbnails for Sub Images */}
               {propertyImages.map((image, index) => (
                 <a
                   key={index + 1}
@@ -259,7 +253,19 @@ const PropertyDetail = () => {
                 id="loanAmount"
                 className="form-control"
                 value={loanAmount}
-                onChange={(e) => setLoanAmount(e.target.value)}
+                onChange={(e) => setLoanAmount(Number(e.target.value))}
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="downPayment" className="form-label">
+                Down Payment ($)
+              </label>
+              <input
+                type="number"
+                id="downPayment"
+                className="form-control"
+                value={downPayment}
+                onChange={(e) => setDownPayment(Number(e.target.value))}
               />
             </div>
             <div className="mb-3">
@@ -272,20 +278,23 @@ const PropertyDetail = () => {
                 className="form-control"
                 step="0.01"
                 value={interestRate}
-                onChange={(e) => setInterestRate(e.target.value)}
+                onChange={(e) => setInterestRate(Number(e.target.value))}
               />
             </div>
             <div className="mb-3">
               <label htmlFor="loanTerm" className="form-label">
                 Loan Term (years)
               </label>
-              <input
-                type="number"
+              <select
                 id="loanTerm"
                 className="form-control"
                 value={loanTerm}
-                onChange={(e) => setLoanTerm(e.target.value)}
-              />
+                onChange={(e) => setLoanTerm(Number(e.target.value))}
+              >
+                <option value={5}>5 years</option>
+                <option value={10}>10 years</option>
+                <option value={15}>15 years</option>
+              </select>
             </div>
           </form>
           <h4 className="mt-3">Estimated Monthly Payment: ${monthlyPayment}</h4>

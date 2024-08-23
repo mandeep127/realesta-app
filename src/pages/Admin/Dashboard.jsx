@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AdminDashboard } from "../../store/AdminHomeAPI/adminhApiSlice";
-import { Table, Container, Spinner, Alert } from "react-bootstrap";
+import { Table, Container, Spinner, Alert, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AiOutlineLink } from "react-icons/ai";
 import { format } from "date-fns";
+import { FaHome, FaUser } from "react-icons/fa";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -37,11 +38,12 @@ const Dashboard = () => {
     );
   }
 
-  const properties = Array.isArray(authData?.data.properties)
+  // Use optional chaining and default values to handle null or undefined values
+  const properties = Array.isArray(authData?.data?.properties)
     ? authData.data.properties
     : [];
 
-  const users = Array.isArray(authData?.data.users) ? authData.data.users : [];
+  const users = Array.isArray(authData?.data?.users) ? authData.data.users : [];
 
   return (
     <Container className="mt-4 px-4">
@@ -50,6 +52,18 @@ const Dashboard = () => {
         This is your main content area. Add more components and information
         here.
       </p>
+      <div className="d-flex justify-content-between mb-4">
+        <div className="p-3 border rounded shadow-sm w-100 w-md-45 me-md-2 mb-4 mb-md-0 text-center">
+          <FaHome className="fs-1 mb-2" />
+          <h2 className="mb-2">Properties Count</h2>
+          <p className="fs-4">{authData?.data?.properties_count || 0}</p>
+        </div>
+        <div className="p-3 border rounded shadow-sm w-100 w-md-50 ms-md-2 text-center">
+          <FaUser className="fs-1 mb-2" />
+          <h2 className="mb-2">Users Count</h2>
+          <p className="fs-4">{authData?.data?.users_count || 0}</p>
+        </div>
+      </div>
       <div className="d-flex justify-content-between">
         <div className="w-100 w-md-45 me-md-2 mb-4 mb-md-0">
           {properties.length > 0 ? (

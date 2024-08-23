@@ -88,19 +88,16 @@ const Header = () => {
             <Nav.Link href="/add-property" className="py-3 px-5">
               Sell
             </Nav.Link>
-            <Nav.Link href="#profinder" className="py-3 px-5">
+            <Nav.Link href="/coming-soon" className="py-3 px-5">
               PROfinder
             </Nav.Link>
-            <Nav.Link
-              href="#realestapage"
-              className="py-3 px-5 nav-item-custom"
-            >
+            <Nav.Link href="/coming-soon" className="py-3 px-5 nav-item-custom">
               Realesta Page
             </Nav.Link>
-            <Nav.Link href="#mylearning" className="py-3 px-5 nav-item-custom">
+            <Nav.Link href="/coming-soon" className="py-3 px-5 nav-item-custom">
               My Learning
             </Nav.Link>
-            <Nav.Link href="#tools" className="py-3 px-5 nav-item-custom">
+            <Nav.Link href="/coming-soon" className="py-3 px-5 nav-item-custom">
               Tools
             </Nav.Link>
           </Nav>

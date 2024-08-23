@@ -1,36 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { adminLogout } from "../../store/AdminHomeAPI/adminhApiSlice";
 
 const AdminLogout = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  // Safely get admin state with default values
-  const adminState = useSelector((state) => state.admin) || {};
-  const { isLoading = false, isError = false, isSuccess = false } = adminState;
+  useEffect(() => {
+    const performLogout = async () => {
+      try {
+        await dispatch(adminLogout()).unwrap();
 
-  const handleLogout = async () => {
-    try {
-      await dispatch(adminLogout()).unwrap();
+        localStorage.removeItem("token");
 
-      localStorage.removeItem("admin_token");
+        navigate("/admin/login");
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
+    };
 
-      navigate("/");
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
+    performLogout();
+  }, [dispatch, navigate]);
 
   return (
-    <button
-      onClick={handleLogout}
-      className="btn btn-danger"
-      disabled={isLoading}
-    >
-      {isLoading ? "Logging out..." : "Logout"}
-    </button>
+    <div className="text-center mt-5">
+      <p>Logging out...</p>
+    </div>
   );
 };
 

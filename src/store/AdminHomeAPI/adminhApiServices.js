@@ -128,3 +128,13 @@ export const logoutAdminApi = async () => {
     throw error;
   }
 };
+
+export const adminProfileApi = async (data) => {
+  try {
+    const response = await axiosInstance.get(`${API_URL}api/admin/profile`);
+    return response.data;
+  } catch (error) {
+    console.error("Error in admin API:", error);
+    throw error;
+  }
+};

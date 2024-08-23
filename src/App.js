@@ -14,6 +14,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import UserProfile from "./pages/User/UserProfile";
 import UserLogout from "./components/user/UserLogout";
 import UserChangePass from "./pages/User/UserChangePass";
+import ComingSoon from "./pages/User/ComingSoon";
 
 function App() {
   return (
@@ -90,6 +91,17 @@ function App() {
             <>
               <Layouts>
                 <UserChangePass />
+              </Layouts>
+            </>
+          }
+        />
+
+        <Route
+          path="/coming-soon"
+          element={
+            <>
+              <Layouts>
+                <ComingSoon />
               </Layouts>
             </>
           }

@@ -6,8 +6,8 @@ import Logo from "../../assets/admin.gif";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AdminLogins } from "../../store/AdminLoginAPI/adminloginApiSlice";
-// import "react-toastify/dist/ReactToastify.css";
-// import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
@@ -20,29 +20,21 @@ const AdminLogin = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Clear previous validation errors
     setValidationErrors({});
-
-    // Debugging: Check form values
     console.log("Form Values:", { email, password });
 
     try {
-      // Dispatch login action
       const response = await dispatch(AdminLogins({ email, password }));
-
-      // Debugging: Check response
       console.log("API Response:", response);
 
       const result = response.payload;
 
       if (result.data && result.data.token) {
-        // Successful login
         localStorage.setItem("token", result.data.token);
-        // localStorage.setItem("adminName", result.data.user.name); // Uncomment if needed
+        // localStorage.setItem("adminName", result.data.user.name);
         navigate("/admin/dashboard");
-        // toast.success("Logged in successfully");
+        toast.success("Logged in successfully");
       } else if (result.errors) {
-        // Set validation errors
         setValidationErrors(result.errors);
       } else {
         setValidationErrors({
@@ -51,7 +43,7 @@ const AdminLogin = () => {
       }
     } catch (error) {
       console.error("Login error:", error.message);
-      // toast.error("Failed to login. Please try again later.");
+      toast.error("Failed to login. Please try again later.");
       setValidationErrors({
         general: "Failed to login. Please try again later.",
       });
@@ -61,12 +53,10 @@ const AdminLogin = () => {
   const renderErrors = () => {
     const errorMessages = [];
 
-    // Handle general error messages
     if (validationErrors.general) {
       errorMessages.push(validationErrors.general);
     }
 
-    // Handle field-specific error messages
     if (validationErrors.email) {
       errorMessages.push(...validationErrors.email);
     }

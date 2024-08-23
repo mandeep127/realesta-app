@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   adminDashboardApi,
+  adminProfileApi,
   adminPropertyInfoApi,
   AllPropertiesApi,
   detailPropertyApi,
@@ -24,6 +25,7 @@ const initialState = {
   pagination: {},
   userDetails: [],
   property: [],
+  Profile: [],
 };
 
 export const AdminDashboard = createAsyncThunk(
@@ -163,6 +165,22 @@ export const adminLogout = createAsyncThunk(
   }
 );
 
+//admin Profile
+export const userProfile = createAsyncThunk(
+  "admin/Profile",
+  async (_, thunkAPI) => {
+    try {
+      const response = await adminProfileApi();
+      console.log("response", response);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
 const AdminDashboardSlice = createSlice({
   name: "Dashboard",
   initialState,
@@ -277,6 +295,20 @@ const AdminDashboardSlice = createSlice({
         state.authData = null;
       })
       .addCase(adminLogout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // userProfile
+      .addCase(userProfile.pending, (state) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(userProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+        state.Profile = action.payload;
+      })
+      .addCase(userProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
