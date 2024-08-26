@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
+  changePasswordApi,
   forgotPasswordApi,
   loginUserApi,
   logoutUserApi,
@@ -99,6 +100,21 @@ export const userProfile = createAsyncThunk(
   }
 );
 
+//change password
+export const changePassword = createAsyncThunk(
+  "user/changePassword",
+  async (credentials, thunkAPI) => {
+    try {
+      const response = await changePasswordApi(credentials);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
 const loginSlice = createSlice({
   name: "users",
   initialState,
@@ -181,6 +197,20 @@ const loginSlice = createSlice({
         state.Profile = action.payload.data;
       })
       .addCase(userProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      //changePassword
+      .addCase(changePassword.pending, (state) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(changePassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+        state.authData = action.payload;
+      })
+      .addCase(changePassword.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

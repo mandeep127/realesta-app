@@ -1,37 +1,57 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FaLock } from "react-icons/fa";
+import { changePassword } from "../../store/authAPI/authApiSlice";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const UserChangePass = () => {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [error, setError] = useState("");
+  const [current_password, setCurrentPassword] = useState("");
+  const [new_password, setNewPassword] = useState("");
+  const [confirm_new_password, setConfirmNewPassword] = useState("");
+  const [errorMessages, setErrorMessages] = useState({});
+  const [generalError, setGeneralError] = useState("");
 
-  const handleSubmit = (event) => {
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.users.loading);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setErrorMessages({});
+    setGeneralError("");
 
-    if (!currentPassword || !newPassword || !confirmNewPassword) {
-      setError("All fields are required");
+    if (!current_password || !new_password || !confirm_new_password) {
+      setGeneralError("All fields are required");
       return;
     }
-    if (newPassword !== confirmNewPassword) {
-      setError("New passwords do not match");
+    if (new_password !== confirm_new_password) {
+      setGeneralError("New passwords do not match");
       return;
     }
-    if (newPassword.length < 6) {
-      setError("New password must be at least 6 characters long");
+    if (new_password.length < 6) {
+      setGeneralError("New password must be at least 6 characters long");
       return;
     }
-    setError("");
 
-    // Submit the form data (e.g., make an API call)
-    console.log({
-      currentPassword,
-      newPassword,
-      confirmNewPassword,
-    });
+    try {
+      const response = await dispatch(
+        changePassword({ current_password, new_password, confirm_new_password })
+      ).unwrap();
 
-    // Reset form
+      if (response.code === 200) {
+        toast.success(response.message || "Password updated successfully!");
+      } else if (response.code === 401) {
+        toast.error("Current password does not match.");
+      }
+    } catch (err) {
+      if (err.errors) {
+        setErrorMessages(err.errors);
+      } else {
+        setGeneralError(err.message || "An error occurred");
+        toast.error(err.message || "An error occurred");
+      }
+    }
+
     setCurrentPassword("");
     setNewPassword("");
     setConfirmNewPassword("");
@@ -53,10 +73,15 @@ const UserChangePass = () => {
               type="password"
               id="current-password"
               className="form-control"
-              value={currentPassword}
+              value={current_password}
               onChange={(e) => setCurrentPassword(e.target.value)}
               required
             />
+            {errorMessages.current_password && (
+              <div className="alert alert-danger">
+                {errorMessages.current_password.join(", ")}
+              </div>
+            )}
           </div>
 
           <div className="mb-3">
@@ -67,10 +92,15 @@ const UserChangePass = () => {
               type="password"
               id="new-password"
               className="form-control"
-              value={newPassword}
+              value={new_password}
               onChange={(e) => setNewPassword(e.target.value)}
               required
             />
+            {errorMessages.new_password && (
+              <div className="alert alert-danger">
+                {errorMessages.new_password.join(", ")}
+              </div>
+            )}
           </div>
 
           <div className="mb-3">
@@ -81,21 +111,30 @@ const UserChangePass = () => {
               type="password"
               id="confirm-new-password"
               className="form-control"
-              value={confirmNewPassword}
+              value={confirm_new_password}
               onChange={(e) => setConfirmNewPassword(e.target.value)}
               required
             />
+            {errorMessages.confirm_new_password && (
+              <div className="alert alert-danger">
+                {errorMessages.confirm_new_password.join(", ")}
+              </div>
+            )}
           </div>
 
-          {error && <div className="alert alert-danger">{error}</div>}
+          {generalError && (
+            <div className="alert alert-danger">{generalError}</div>
+          )}
 
           <button
             type="submit"
             className="btn btn-primary rounded-5 p-3 px-4 fw-bold"
+            disabled={loading}
           >
-            Change Password
+            {loading ? "Changing..." : "Change Password"}
           </button>
         </form>
+        <ToastContainer />
       </div>
     </div>
   );

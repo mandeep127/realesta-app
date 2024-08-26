@@ -8,6 +8,7 @@ import {
 import "./style.css";
 import { Link, useNavigate } from "react-router-dom";
 import { IoCaretBackCircle } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 const PropertyForm = () => {
   const [formData, setFormData] = useState({
@@ -16,8 +17,8 @@ const PropertyForm = () => {
     state: "",
     pincode: "",
     country: "",
-    image: null, // Single main image
-    subImages: [], // Multiple sub-images
+    image: null,
+    subImages: [],
     property_type_id: "",
     basement: "",
     parking_number: "",
@@ -38,6 +39,9 @@ const PropertyForm = () => {
     const token = localStorage.getItem("user_token");
     if (!token) {
       navigate("/login");
+      toast.warning(
+        "Please log in to your account before listing a property for sale."
+      );
     } else {
       dispatch(fetchPropertyTypes());
     }
@@ -49,12 +53,12 @@ const PropertyForm = () => {
       if (name === "image") {
         setFormData((prevState) => ({
           ...prevState,
-          image: files[0], // Handle single file for main image
+          image: files[0],
         }));
       } else if (name === "subImages") {
         setFormData((prevState) => ({
           ...prevState,
-          subImages: Array.from(files), // Handle multiple files for sub-images
+          subImages: Array.from(files),
         }));
       }
     } else {
@@ -69,7 +73,7 @@ const PropertyForm = () => {
     e.preventDefault();
 
     if (!formData.description) {
-      alert("Description is required.");
+      toast.error("Description is required.");
       return;
     }
 
@@ -95,7 +99,7 @@ const PropertyForm = () => {
 
     try {
       await dispatch(addProperty(formDataToSend));
-      alert("Property added successfully!");
+
       setFormData({
         address: "",
         city: "",
@@ -113,8 +117,9 @@ const PropertyForm = () => {
         price: "",
         description: "",
       });
+      toast.success("Property added successfully!");
     } catch (err) {
-      alert("Failed to add property. Please try again.");
+      toast.error("Failed to add property. Please try again.");
     }
   };
 
@@ -310,7 +315,7 @@ const PropertyForm = () => {
                 type="number"
                 name="bathrooms"
                 placeholder="Enter number of bathrooms"
-                value={formData.bedrooms}
+                value={formData.bathrooms}
                 onChange={handleChange}
                 required
                 min="0"
@@ -395,10 +400,10 @@ const PropertyForm = () => {
           {status === "loading" ? "Submitting..." : "Submit"}
         </Button>
 
-        {status === "failed" && <Alert variant="danger">{error}</Alert>}
+        {/* {status === "failed" && <Alert variant="danger">{error}</Alert>}
         {status === "succeeded" && (
           <Alert variant="success">Property created successfully!</Alert>
-        )}
+        )} */}
       </Form>
     </div>
   );

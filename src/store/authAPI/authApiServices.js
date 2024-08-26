@@ -68,3 +68,18 @@ export const userProfileApi = async (data) => {
     throw error;
   }
 };
+
+//change-password
+
+export const changePasswordApi = async (data) => {
+  try {
+    const response = await axiosInstance.post(
+      `${API_URL}api/change-password`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error in Change Password API:", error);
+    throw error;
+  }
+};

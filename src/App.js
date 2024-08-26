@@ -15,10 +15,24 @@ import UserProfile from "./pages/User/UserProfile";
 import UserLogout from "./components/user/UserLogout";
 import UserChangePass from "./pages/User/UserChangePass";
 import ComingSoon from "./pages/User/ComingSoon";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={2500}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover={false}
+        theme="light"
+      />
       <Routes>
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/login" element={<UserLogin />} />

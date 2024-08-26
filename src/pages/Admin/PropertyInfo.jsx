@@ -37,7 +37,7 @@ const PropertyInfo = () => {
     return <p className="text-center text-danger mt-5">{errorMessage}</p>;
   }
 
-  const property = propertyDetails?.data.property;
+  const property = propertyDetails?.data?.property;
   const user = propertyDetails?.data?.user;
 
   const handleStatusChange = () => {

@@ -6,8 +6,8 @@ import userLogo from "../../assets/admin.gif";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Login } from "../../store/authAPI/authApiSlice";
-// import "react-toastify/dist/ReactToastify.css";
-// import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 const UserLogin = () => {
   const [email, setEmail] = useState("");
@@ -17,8 +17,19 @@ const UserLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      toast.error("Please enter a valid email address.");
+      return;
+    }
 
     try {
       const response = await dispatch(Login({ email, password }));
@@ -28,14 +39,17 @@ const UserLogin = () => {
         localStorage.setItem("user_token", response.payload.data.token);
         localStorage.setItem("User_Name", response.payload.data.user.name);
         console.log("User_Name:", response.payload.data.user.name);
-        // toast.success("Logged in successfully");
+        toast.success("Logged in successfully");
         navigate("/");
       } else {
         setError(response.message || "Invalid credentials. Please try again.");
+        toast.error(
+          response.message || "Invalid credentials. Please try again."
+        );
       }
     } catch (error) {
       console.error("Login error:", error.message);
-      // toast.error("Failed to login. Please try again later.");
+      toast.error("Failed to login. Please try again later.");
       setError("Failed to login. Please try again later.");
     }
   };

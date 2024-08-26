@@ -36,14 +36,17 @@ const AdminLogin = () => {
         toast.success("Logged in successfully");
       } else if (result.errors) {
         setValidationErrors(result.errors);
+        toast.error(result.errors);
       } else {
         setValidationErrors({
           general: "Invalid credentials. Please try again.",
         });
+        toast.error("Invalid credentials. Please try again.");
       }
     } catch (error) {
       console.error("Login error:", error.message);
-      toast.error("Failed to login. Please try again later.");
+      toast.error("Login error:", error.message);
+
       setValidationErrors({
         general: "Failed to login. Please try again later.",
       });

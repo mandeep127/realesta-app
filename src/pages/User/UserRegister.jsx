@@ -7,7 +7,7 @@ import userLogo from "../../assets/admin.gif";
 import { useDispatch } from "react-redux";
 import { Register } from "../../store/authAPI/authApiSlice";
 import { useNavigate } from "react-router-dom";
-// import { toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 const UserRegister = () => {
   const dispatch = useDispatch();
@@ -30,20 +30,39 @@ const UserRegister = () => {
     }));
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateEmail(formData.email)) {
+      setError("Please enter a valid email address.");
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    if (formData.password !== formData.confirm_password) {
+      setError("Passwords do not match.");
+      toast.error("Passwords do not match.");
+      return;
+    }
+
     try {
       const response = await dispatch(Register(formData));
 
       if (response.payload.code === 201) {
         navigate("/login");
+        toast.success("Registered successfully! You can now log in.");
       } else {
-        setError("Failed. Please re-fill & check email/username.");
-        // toast.error("Please check your details and try again.");
+        setError("Failed. Please re-fill & check email.");
+        toast.error("Please check your details and try again.");
       }
     } catch (error) {
-      setError("Failed to registration. Please try again later.");
-      // toast.error("Registration failed. Please try again later.");
+      setError("Failed to register. Please try again later.");
+      toast.error("Registration failed. Please try again later.");
     }
   };
 
@@ -153,17 +172,13 @@ const UserRegister = () => {
           />
           <Button
             type="submit"
-            variant="primary" // Changed to primary variant for blue color
+            variant="primary"
             className="rounded-2 px-4 ms-2"
             disabled={!formData.agreed}
           >
             {formData.agreed ? "Submit" : "Agree to Submit"}
           </Button>
         </Form.Group>
-
-        {/* {registerError && (
-          <p className="text-danger">{registerError.message}</p>
-        )} */}
       </Form>
     </Container>
   );
