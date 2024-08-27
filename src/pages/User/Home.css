@@ -93,3 +93,15 @@
      box-shadow: none;
    }
    
+   .imgAdd {
+    position: absolute; /* Use absolute positioning */
+    top: 64.6%; /* Center vertically */
+    left: 18%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust for exact centering */
+    z-index: 10; /* Ensure it's in front of the text */
+    background: url('../../assets/r.png') no-repeat center center; /* Set the image */
+    background-size: contain; /* Adjust size as needed */
+    width: 28vw; /* Full viewport width for the image container */
+    height: 30vh; /* Full viewport height for the image container */
+}
+

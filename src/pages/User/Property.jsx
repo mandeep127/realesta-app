@@ -1,126 +1,11 @@
-// // components/PropertyFilter.jsx
-// import React, { useState, useEffect } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { applyFilters } from "../../store/PropertyAPI/propertyApiSlice";
-
-// const PropertyFilter = () => {
-//   const dispatch = useDispatch();
-//   const {
-//     properties = [],
-//     loading,
-//     error,
-//   } = useSelector((state) => state.property || {});
-
-//   const [filters, setFilters] = useState({
-//     property_type_id: "",
-//     minPrice: "",
-//     maxPrice: "",
-//     minBedrooms: "",
-//     maxBedrooms: "",
-//   });
-//   console.log("Property", properties.data);
-//   useEffect(() => {
-//     dispatch(applyFilters(filters));
-//   }, [filters, dispatch]);
-
-//   const handleTypeChange = (value, checked) => {
-//     const updatedTypes = checked
-//       ? [...filters.property_type_id, value]
-//       : filters.property_type_id.filter((type) => type !== value);
-
-//     setFilters((prevFilters) => ({
-//       ...prevFilters,
-//       property_type_id: updatedTypes,
-//     }));
-//   };
-
-//   const handleInputChange = (e) => {
-//     const { name, value } = e.target;
-//     setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
-//   };
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault(); // Prevent default form submission
-//     dispatch(applyFilters(filters)); // Dispatch action to apply filters
-//   };
-
-//   return (
-//     <div>
-//       <h3>Filter Properties</h3>
-//       <form onSubmit={handleSubmit}>
-//         <div>
-//           <h5>Property Type:</h5>
-//           <label>
-//             <input
-//               type="checkbox"
-//               value="1"
-//               checked={filters.property_type_id.includes("1")}
-//               onChange={(e) => handleTypeChange("1", e.target.checked)}
-//             />
-//             Residential
-//           </label>
-//           <label>
-//             <input
-//               type="checkbox"
-//               value="2"
-//               checked={filters.property_type_id.includes("2")}
-//               onChange={(e) => handleTypeChange("2", e.target.checked)}
-//             />
-//             MultiFamily
-//           </label>
-//         </div>
-//         <div>
-//           <input
-//             type="number"
-//             name="minPrice"
-//             placeholder="Min Price"
-//             value={filters.minPrice}
-//             onChange={handleInputChange}
-//           />
-//           <input
-//             type="number"
-//             name="maxPrice"
-//             placeholder="Max Price"
-//             value={filters.maxPrice}
-//             onChange={handleInputChange}
-//           />
-//           <input
-//             type="number"
-//             name="minBedrooms"
-//             placeholder="Min Bedrooms"
-//             value={filters.minBedrooms}
-//             onChange={handleInputChange}
-//           />
-//           <input
-//             type="number"
-//             name="maxBedrooms"
-//             placeholder="Max Bedrooms"
-//             value={filters.maxBedrooms}
-//             onChange={handleInputChange}
-//           />
-//         </div>
-//         <button type="submit">Apply Filters</button>
-//       </form>
-//       {loading && <p>Loading...</p>}
-//       {error && <p>Error: {error}</p>}
-//       <div>
-//         <h4>Properties</h4>
-//         <ul>
-//           {properties.map((property) => (
-//             <li key={property.id}>{property.address}</li>
-//           ))}
-//         </ul>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default PropertyFilter;
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaBed, FaBath, FaChartArea, FaMapMarkerAlt } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router";
 import { applyFilters } from "../../store/PropertyAPI/propertyApiSlice";
+import "./Property.css";
+import Slider from "@mui/material/Slider";
+import sold from "../../assets/sold.png";
 
 const Property = () => {
   const dispatch = useDispatch();
@@ -134,10 +19,12 @@ const Property = () => {
 
   const [filters, setFilters] = useState({
     property_type_id: [],
-    min_price: "",
-    max_price: "",
+    min_price: 0,
+    max_price: 99999,
     min_bedrooms: "",
     max_bedrooms: "",
+    min_bathrooms: "",
+    max_bathrooms: "",
   });
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -145,12 +32,10 @@ const Property = () => {
   const propertiesPerPage = 6;
 
   useEffect(() => {
-    // Extract query parameters from the URL
     const queryParams = new URLSearchParams(location.search);
     const keyword = queryParams.get("keyword") || "";
     const propertyType = queryParams.get("property_type") || "";
 
-    // Set filters based on URL parameters
     const newFilters = {
       keyword: keyword || "",
       property_type_id: propertyType || "",
@@ -159,9 +44,9 @@ const Property = () => {
     dispatch(applyFilters(newFilters));
   }, [dispatch, location.search]);
 
-  // useEffect(() => {
-  //   dispatch(applyFilters({}));
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(applyFilters(filters));
+  }, [filters, dispatch]);
 
   const handleTypeChange = (value, checked) => {
     const updatedTypes = checked
@@ -184,6 +69,14 @@ const Property = () => {
     setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
   };
 
+  const handlePriceChange = (event, newValue) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      min_price: newValue[0],
+      max_price: newValue[1],
+    }));
+  };
+
   const isValidNumber = (value) => !isNaN(value) && value !== "";
 
   const filterProperties = () => {
@@ -195,15 +88,15 @@ const Property = () => {
       );
     }
 
-    // if (isValidNumber(filters.min_price)) {
-    //   filteredProperties = filteredProperties.filter(
-    //     (property) => property.price >= Number(filters.min_price)
-    //   );
-    // }
-
-    if (isValidNumber(filters.price)) {
+    if (isValidNumber(filters.min_price)) {
       filteredProperties = filteredProperties.filter(
-        (property) => property.price <= Number(filters.price)
+        (property) => property.price >= Number(filters.min_price)
+      );
+    }
+
+    if (isValidNumber(filters.max_price)) {
+      filteredProperties = filteredProperties.filter(
+        (property) => property.price <= Number(filters.max_price)
       );
     }
 
@@ -226,23 +119,6 @@ const Property = () => {
         return Number(property.bathrooms) === Number(filters.bathrooms);
       });
     }
-
-    // if (isValidNumber(filters.bedrooms)) {
-    //   filteredProperties = filteredProperties.filter((property) => {
-    //     return Number(property.bedrooms) === Number(filters.bedrooms);
-    //   });
-    // }
-
-    // if (isValidNumber(filters.bathrooms)) {
-    //   filteredProperties = filteredProperties.filter((property) => {
-    //     console.log(
-    //       "Checking bathrooms:",
-    //       property.bathrooms,
-    //       filters.bathrooms
-    //     );
-    //     return Number(property.bathrooms) === Number(filters.bathrooms);
-    //   });
-    // }
 
     return filteredProperties;
   };
@@ -299,8 +175,18 @@ const Property = () => {
             </div>
             <div className="mt-4">
               <p className="fw-bold fs-5">Price:</p>
+              <Slider
+                value={[filters.min_price, filters.max_price]}
+                onChange={handlePriceChange}
+                valueLabelDisplay="auto"
+                min={0}
+                max={20000}
+                step={1000}
+                marks
+                style={{ marginBottom: "1rem" }}
+              />
               <div className="row mb-3">
-                {/* <div className="col-md-6 mb-2">
+                <div className="col-md-6 mb-3">
                   <input
                     type="number"
                     name="min_price"
@@ -308,85 +194,60 @@ const Property = () => {
                     placeholder="Min Price"
                     value={filters.min_price}
                     onChange={handleInputChange}
-                  />
-                </div> */}
-                <div className="col-md-9 mb-2">
-                  <input
-                    type="number"
-                    name="price"
-                    className="form-control"
-                    placeholder="Price"
-                    value={filters.price}
-                    onChange={handleInputChange}
+                    min="0"
                   />
                 </div>
-                <p className="fw-bold fs-5 my-3">Bedrooms:</p>
-                {/* <div className="col-md-6 mb-2">
+                <div className="col-md-6 mb-2">
                   <input
                     type="number"
-                    name="min_bedrooms"
+                    name="max_price"
                     className="form-control"
-                    placeholder="Min Bedrooms"
-                    value={filters.min_bedrooms}
+                    placeholder="Max Price"
+                    value={filters.max_price}
                     onChange={handleInputChange}
+                    min="0"
                   />
-                </div> */}
-                <div className="col-md-9 mb-2">
-                  <select
-                    name="bedrooms"
-                    className="form-control"
-                    value={filters.bedrooms}
-                    onChange={handleInputChange}
-                  >
-                    <option value=""> bedrooms</option>
-                    {[1, 2, 3, 4].map((num) => (
-                      <option key={num} value={num}>
-                        {num}
-                      </option>
-                    ))}
-                    <option value="5+">5+</option>
-                  </select>
                 </div>
-                {/* //bathrooms */}
-                <p className="fw-bold fs-5 my-3">Bathrooms:</p>
-                <div className="col-md-9 mb-2">
-                  <select
-                    name="bathrooms"
-                    className="form-control"
-                    value={filters.bathrooms}
-                    onChange={handleInputChange}
-                  >
-                    <option value=""> bathrooms</option>
-                    {[1, 2, 3, 4].map((num) => (
-                      <option key={num} value={num}>
-                        {num}
-                      </option>
-                    ))}
-                    <option value="5+">5+</option>
-                  </select>
-                </div>
-                {/* <div className="col-md-9 mb-2">
-                  <input
-                    type="number"
-                    name="bathrooms"
-                    className="form-control"
-                    placeholder="Bathrooms"
-                    value={filters.bathrooms}
-                    onChange={handleInputChange}
-                  />
-                </div> */}
+              </div>
+              <p className="fw-bold fs-5 my-3">Bedrooms:</p>
+              <div className="col-md-11 mb-2">
+                <select
+                  name="bedrooms"
+                  className="form-control"
+                  value={filters.bedrooms}
+                  onChange={handleInputChange}
+                >
+                  <option value=""> bedrooms</option>
+                  {[1, 2, 3, 4].map((num) => (
+                    <option key={num} value={num}>
+                      {num}
+                    </option>
+                  ))}
+                  <option value="5+">5+</option>
+                </select>
+              </div>
+              {/* //bathrooms */}
+              <p className="fw-bold fs-5 my-3">Bathrooms:</p>
+              <div className="col-md-11 mb-2">
+                <select
+                  name="bathrooms"
+                  className="form-control"
+                  value={filters.bathrooms}
+                  onChange={handleInputChange}
+                >
+                  <option value=""> bathrooms</option>
+                  {[1, 2, 3, 4].map((num) => (
+                    <option key={num} value={num}>
+                      {num}
+                    </option>
+                  ))}
+                  <option value="5+">5+</option>
+                </select>
               </div>
             </div>
-            {/* 
-            <button
-              onClick={() => setFilters(filters)}
-              className="btn btn-primary mt-3"
-            >
-              Apply Filters
-            </button>
-            */}
           </div>
         </div>
+
         <div className="col-md-9">
           <div className="row">
             {paginatedProperties && paginatedProperties.length > 0 ? (
@@ -397,6 +258,15 @@ const Property = () => {
                     onClick={() => handlePropertyClick(property)}
                     style={{ cursor: "pointer" }}
                   >
+                    <div
+                      class="property-type-overlay"
+                      data-property-type-id={property.property_type_id}
+                    ></div>
+                    {property.status === "0" && (
+                      <div className="sold-out-overlay rounded-4">
+                        <img src={sold} alt="Sold Out" />
+                      </div>
+                    )}
                     <img
                       src={
                         property.image
@@ -430,9 +300,6 @@ const Property = () => {
                         />
                         {property.address || "No address"}
                       </h5>
-                      {/* <p className="card-text ms-2">
-                      {property.description || "No description"}
-                    </p> */}
                     </div>
                   </div>
                 </div>
@@ -463,49 +330,8 @@ const Property = () => {
                 ))}
               </ul>
             </nav>
-            {/* <button className="btn btn-primary mt-3 rounded-5 px-5 py-3 fw-bold">
-              View All Properties
-            </button> */}
           </div>
         </div>
-        {/* {selectedProperty && (
-          <div className="col-md-4 mt-4">
-            <div className="bg-white p-4 rounded-4 border shadow-sm">
-              <h4 className="mb-3">Property Details</h4>
-              <img
-                src={
-                  selectedProperty.image
-                    ? `http://127.0.0.1:8000/${selectedProperty.image}`
-                    : "https://via.placeholder.com/306x200"
-                }
-                alt={selectedProperty.address || "No address"}
-                className="img-fluid mb-3"
-                style={{ height: "200px", objectFit: "cover" }}
-              />
-              <p>
-                <strong>Address:</strong>{" "}
-                {selectedProperty.address || "No address"}
-              </p>
-              <p>
-                <strong>Price:</strong> ${selectedProperty.price || "0.00"}
-              </p>
-              <p>
-                <strong>Bedrooms:</strong> {selectedProperty.bedrooms || "N/A"}
-              </p>
-              <p>
-                <strong>Bathrooms:</strong>{" "}
-                {selectedProperty.bathrooms || "N/A"}
-              </p>
-              <p>
-                <strong>Size:</strong> {selectedProperty.size || "N/A"} sq ft
-              </p>
-              {/* <p>
-                <strong>Description:</strong>{" "}
-                {selectedProperty.description || "No description"}
-              </p> *
-            </div>
-          </div>
-        )} */}
       </div>
     </div>
   );

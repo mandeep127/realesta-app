@@ -98,7 +98,7 @@ const UserProfile = () => {
             </span>
           </p>
         </div>
-
+        <div className="imgAd"></div>
         {/* Profile Picture and Buttons Section */}
         <div className="d-flex flex-column align-items-end position-relative">
           <img
@@ -131,7 +131,6 @@ const UserProfile = () => {
           </div>
         </div>
       </div>
-
       {/* Properties Section */}
       <div className="custom-css rounded-4 bg-light shadow p-4">
         <h3 className="text-center mb-5 mt-4">Properties for Sale</h3>
@@ -173,10 +172,9 @@ const UserProfile = () => {
             ))}
           </ul>
         ) : (
-          <p className="text-center">No properties found 🚫.</p>
+          <p className="pt-3">No properties found 🚫.</p>
         )}
       </div>
-
       {/* Logout Confirmation Modal */}
       <Modal show={showLogoutModal} onHide={handleHideModal}>
         <Modal.Header closeButton>

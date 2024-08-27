@@ -94,6 +94,9 @@ const UserDetails = () => {
           )}
         </div>
       </div>
+      <div className="mt-5 text-center">
+        <p className="mt-2 text-muted">More Details Not Found...</p>
+      </div>
     </div>
   );
 };

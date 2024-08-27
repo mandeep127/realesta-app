@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchDetailProperty,
   UpdatePropertyStatus,
 } from "../../store/AdminHomeAPI/adminhApiSlice";
 import "./Property.css";
+import { format } from "date-fns";
 
 const PropertyInfo = () => {
   const { id } = useParams();
@@ -41,23 +42,28 @@ const PropertyInfo = () => {
   const user = propertyDetails?.data?.user;
 
   const handleStatusChange = () => {
-    dispatch(
-      UpdatePropertyStatus({
-        id,
-        status: isStatusActive ? "0" : "1",
-      })
-    ).then((response) => {
-      if (response.meta.requestStatus === "fulfilled") {
-        setIsStatusActive(!isStatusActive);
-      }
-    });
+    const action = isStatusActive ? "deactivate" : "activate";
+    const confirmMessage = `Are you sure you want to ${action} this property?`;
+
+    if (window.confirm(confirmMessage)) {
+      dispatch(
+        UpdatePropertyStatus({
+          id,
+          status: isStatusActive ? "0" : "1",
+        })
+      ).then((response) => {
+        if (response.meta.requestStatus === "fulfilled") {
+          setIsStatusActive(!isStatusActive);
+        }
+      });
+    }
   };
 
   return (
     <div className="container mt-4 px-5 p-2">
       <h4 className="pb-3">Property Details:</h4>
       <div className="row">
-        <div className="col-lg-6 col-md-8 col-sm-12 mb-4 mx-2 rounded-5 ">
+        <div className="col-lg-6 col-md-8 col-sm-12 mb-4 ms-2 rounded-5 ">
           {property && (
             <div className="property-container rounded-5 bg-white shadow-lg p-4">
               <img
@@ -116,16 +122,22 @@ const PropertyInfo = () => {
             </div>
           )}
         </div>
-        <div className="col-lg-5 col-md-19 col-sm-12 my-5 px-5 ">
+        <div className="col-lg-5 col-md-19 col-sm-12 my-5 ps-5 ">
           <div className="p-3 bg-light rounded shadow-sm">
             <h5 className="pb-2 bg-primary text-white rounded-3 ps-3 py-2 mb-3">
               Additional Information:
             </h5>
             <p>
-              <strong>Created At:</strong> {property?.created_at || "N/A"}
+              <strong>Created At:</strong>{" "}
+              {property?.created_at
+                ? format(new Date(property?.created_at), "dd MMM yy, hh:mm a")
+                : "N/A"}
             </p>
             <p>
-              <strong>Updated At:</strong> {property?.updated_at || "N/A"}
+              <strong>Updated At:</strong>
+              {property?.updated_at
+                ? format(new Date(property?.updated_at), "dd MMM yy, hh:mm a")
+                : "N/A"}
             </p>
             <p>
               <strong>Country:</strong> {property?.country || "N/A"}
@@ -147,7 +159,7 @@ const PropertyInfo = () => {
             </p>
 
             <h5 className="pb-2 bg-primary text-white rounded-3 ps-3 py-2 mb-3 mt-5">
-              Property Sell By:
+              Property Sold By:
             </h5>
             {user ? (
               <>
@@ -155,7 +167,10 @@ const PropertyInfo = () => {
                   <strong>Name:</strong> {user.name || "N/A"}
                 </p>
                 <p>
-                  <strong>Email:</strong> {user.email || "N/A"}
+                  <strong>Email:</strong>{" "}
+                  <Link to={`/admin/user/${user.id}`} className="text-primary">
+                    {user.email || "N/A"}
+                  </Link>
                 </p>
                 <p>
                   <strong>Phone:</strong> {user.phone || "N/A"}

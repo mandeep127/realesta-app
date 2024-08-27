@@ -279,7 +279,7 @@ const Home = () => {
             <p>No properties available.</p>
           )}
         </div>
-        <div className="text-center my-4">
+        <div className="text-center  my-4">
           <button
             className="btn btn-primary mt-3 rounded-5 px-5 py-3 fw-bold"
             onClick={handleViewDeals}
@@ -293,10 +293,12 @@ const Home = () => {
         <h1 className="text-center pb-2 fw-bolder fs-1">
           Optimizing Website Functionality & Processes
         </h1>
+
         <p className="text-center pb-3">
           Dive into step-by-step instructions for seamless user experiences,
           covering account management and advanced features.
         </p>
+        <div className="imgAdd"></div>
         <div className="video-container">
           <video
             className="w-100 rounded-5"

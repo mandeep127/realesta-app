@@ -37,6 +37,13 @@ const Header = () => {
               </Dropdown.Item>
 
               <Dropdown.Item
+                href="/admin/change-password"
+                className="fw-bolder"
+              >
+                Change Password
+              </Dropdown.Item>
+
+              <Dropdown.Item
                 href="#"
                 className="fw-bolder"
                 onClick={(e) => {

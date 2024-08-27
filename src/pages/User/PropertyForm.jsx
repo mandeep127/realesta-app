@@ -98,28 +98,33 @@ const PropertyForm = () => {
     });
 
     try {
-      await dispatch(addProperty(formDataToSend));
-
-      setFormData({
-        address: "",
-        city: "",
-        state: "",
-        pincode: "",
-        country: "",
-        image: null,
-        subImages: [],
-        property_type_id: "",
-        basement: "",
-        parking_number: "",
-        bedrooms: "",
-        bathrooms: "",
-        size: "",
-        price: "",
-        description: "",
-      });
-      toast.success("Property added successfully!");
+      const resultAction = await dispatch(addProperty(formDataToSend));
+      const result = resultAction.payload;
+      if (result.code === 201) {
+        setFormData({
+          address: "",
+          city: "",
+          state: "",
+          pincode: "",
+          country: "",
+          image: null,
+          subImages: [],
+          property_type_id: "",
+          basement: "",
+          parking_number: "",
+          bedrooms: "",
+          bathrooms: "",
+          size: "",
+          price: "",
+          description: "",
+        });
+        toast.success("Property added successfully!");
+      } else {
+        throw new Error("Unexpected response status");
+      }
     } catch (err) {
       toast.error("Failed to add property. Please try again.");
+      console.error("Error adding property:", err);
     }
   };
 

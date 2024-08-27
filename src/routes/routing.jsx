@@ -9,6 +9,7 @@ import AdminLogout from "../components/admin/AdminLogout";
 import PropertyList from "../pages/Admin/PropertyList";
 import Setting from "../pages/Admin/Setting";
 import AdminProfile from "../pages/Admin/AdminProfile";
+import AdminChangePass from "../pages/Admin/AdminChangePass";
 
 const routing = () => {
   return (
@@ -22,6 +23,7 @@ const routing = () => {
         <Route path="/admin/settings" element={<Setting />} />
         <Route path="/admin/logout" element={<AdminLogout />} />
         <Route path="/admin/profile" element={<AdminProfile />} />
+        <Route path="/admin/change-password" element={<AdminChangePass />} />
       </Routes>
     </>
   );

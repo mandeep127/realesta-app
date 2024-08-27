@@ -13,7 +13,7 @@
    .p-custom {
      padding-left: 50px;
      font-size: 15px;
-     font-family: monospace;
+     font-family:fantasy;
    }
    
    h1 {
@@ -32,4 +32,14 @@
      height: auto;
    }
   
-   
+   .imgAd {
+    position: absolute; /* Use absolute positioning */
+    top: 128%; /* Center vertically */
+    left: 9%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust for exact centering */
+    z-index: 10; /* Ensure it's in front of the text */
+    background: url('../../assets/r.png') no-repeat center center; /* Set the image */
+    background-size: contain; /* Adjust size as needed */
+    width: 20vw; /* Full viewport width for the image container */
+    height: 18vh; /* Full viewport height for the image container */
+}

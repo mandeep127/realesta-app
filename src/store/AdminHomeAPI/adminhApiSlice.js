@@ -4,6 +4,7 @@ import {
   adminProfileApi,
   adminPropertyInfoApi,
   AllPropertiesApi,
+  changePasswordAdmin,
   detailPropertyApi,
   getAllApi,
   getAllBuyerApi,
@@ -166,12 +167,27 @@ export const adminLogout = createAsyncThunk(
 );
 
 //admin Profile
-export const userProfile = createAsyncThunk(
+export const adminProfile = createAsyncThunk(
   "admin/Profile",
   async (_, thunkAPI) => {
     try {
       const response = await adminProfileApi();
       console.log("response", response);
+      return response?.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+//change password
+export const changePass = createAsyncThunk(
+  "admin/changePassword",
+  async (credentials, thunkAPI) => {
+    try {
+      const response = await changePasswordAdmin(credentials);
       return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -299,16 +315,30 @@ const AdminDashboardSlice = createSlice({
         state.error = action.payload;
       })
       // userProfile
-      .addCase(userProfile.pending, (state) => {
+      .addCase(adminProfile.pending, (state) => {
         state.loading = true;
         state.error = "";
       })
-      .addCase(userProfile.fulfilled, (state, action) => {
+      .addCase(adminProfile.fulfilled, (state, action) => {
         state.loading = false;
         state.error = "";
         state.Profile = action.payload;
       })
-      .addCase(userProfile.rejected, (state, action) => {
+      .addCase(adminProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      //change password
+      .addCase(changePass.pending, (state) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(changePass.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+        state.authData = action.payload;
+      })
+      .addCase(changePass.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

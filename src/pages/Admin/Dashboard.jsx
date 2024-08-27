@@ -56,12 +56,17 @@ const Dashboard = () => {
         <div className="p-3 border rounded shadow-sm w-100 w-md-45 me-md-2 mb-4 mb-md-0 text-center">
           <FaHome className="fs-1 mb-2" />
           <h2 className="mb-2">Properties Count</h2>
-          <p className="fs-4">{authData?.data?.properties_count || 0}</p>
+          <p className="fs-4">
+            <span className="fw-bold">
+              {authData?.data?.properties_count || 0}{" "}
+            </span>
+            <span className="fs-6">(Active + De-active)</span>
+          </p>
         </div>
         <div className="p-3 border rounded shadow-sm w-100 w-md-50 ms-md-2 text-center">
           <FaUser className="fs-1 mb-2" />
           <h2 className="mb-2">Users Count</h2>
-          <p className="fs-4">{authData?.data?.users_count || 0}</p>
+          <p className="fs-4 fw-bold">{authData?.data?.users_count || 0}</p>
         </div>
       </div>
       <div className="d-flex justify-content-between">

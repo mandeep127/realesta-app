@@ -131,10 +131,23 @@ export const logoutAdminApi = async () => {
 
 export const adminProfileApi = async (data) => {
   try {
-    const response = await axiosInstance.get(`${API_URL}api/admin/profile`);
+    const response = await axiosInstance.get(`${API_URL}api/admin-profile`);
     return response.data;
   } catch (error) {
     console.error("Error in admin API:", error);
+    throw error;
+  }
+};
+
+export const changePasswordAdmin = async (data) => {
+  try {
+    const response = await axiosInstance.post(
+      `${API_URL}api/change-password`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error in Change Password API:", error);
     throw error;
   }
 };

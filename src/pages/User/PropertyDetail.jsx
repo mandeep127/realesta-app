@@ -8,9 +8,10 @@ import "./PropertyDetail.css";
 import { IoCaretBackCircle } from "react-icons/io5";
 import { AiFillHome } from "react-icons/ai";
 import { MdOutlineDescription } from "react-icons/md";
+import sold from "../../assets/sold.png";
 
 const PropertyDetail = () => {
-  const { id } = useParams(); // Get property ID from URL
+  const { id } = useParams();
   const dispatch = useDispatch();
   const { propertyDetails, status, error } = useSelector(
     (state) => state.property
@@ -24,23 +25,25 @@ const PropertyDetail = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   // Mortgage calculator state
-  const [loanAmount, setLoanAmount] = useState(1234);
-  const [downPayment, setDownPayment] = useState(234);
-  const [interestRate, setInterestRate] = useState(24);
-  const [loanTerm, setLoanTerm] = useState(2);
+  const [loanAmount, setLoanAmount] = useState(12340);
+  const [downPayment, setDownPayment] = useState(0);
+  const [interestRate, setInterestRate] = useState(12);
+  const [loanTerm, setLoanTerm] = useState(1);
   const [monthlyPayment, setMonthlyPayment] = useState(0);
+  const [principalAmount, setPrincipalAmount] = useState(0);
+  const [interestAmount, setInterestAmount] = useState(0);
+  const [totalAmountPayable, setTotalAmountPayable] = useState(0);
 
   // Fetch property details
   useEffect(() => {
     dispatch(fetchDetailsProperty(id));
   }, [id, dispatch]);
 
-  // Update loan amount and down payment based on fetched property details
   useEffect(() => {
     if (propertyDetails?.data?.property) {
       const propertyPrice = propertyDetails.data.property.price || 0;
-      setLoanAmount(propertyPrice);
-      setDownPayment(0); // Reset down payment when property price changes
+      // setLoanAmount(propertyPrice);
+      setDownPayment(0);
     }
   }, [propertyDetails]);
 
@@ -48,13 +51,28 @@ const PropertyDetail = () => {
   useEffect(() => {
     const calculateMortgage = () => {
       const principal = parseFloat(loanAmount) - parseFloat(downPayment);
-      const interest = parseFloat(interestRate) / 100 / 12;
+      if (principal <= 0) {
+        setMonthlyPayment(0);
+        setTotalAmountPayable(0);
+        setPrincipalAmount(0);
+        setInterestAmount(0);
+        return;
+      }
+      const cappedInterestRate = Math.min(parseFloat(interestRate), 20); // Cap interest rate at 20%
+      const interest = cappedInterestRate / 100 / 12;
       const numberOfPayments = parseFloat(loanTerm) * 12;
 
       const monthly =
         (principal * interest) /
         (1 - Math.pow(1 + interest, -numberOfPayments));
+
       setMonthlyPayment(monthly.toFixed(2));
+
+      // Calculate total amount payable and interest amount
+      const totalAmount = monthly * numberOfPayments;
+      setTotalAmountPayable(totalAmount.toFixed(2));
+      setPrincipalAmount(principal.toFixed(2));
+      setInterestAmount((totalAmount - principal).toFixed(2));
     };
 
     calculateMortgage();
@@ -68,6 +86,14 @@ const PropertyDetail = () => {
 
   const handleSelect = (selectedIndex) => {
     setActiveIndex(selectedIndex);
+  };
+
+  // Function to format numbers with commas
+  const formatCurrency = (value) => {
+    return parseFloat(value).toLocaleString("en-IN", {
+      style: "currency",
+      currency: "INR",
+    });
   };
 
   return (
@@ -89,7 +115,7 @@ const PropertyDetail = () => {
       </div>
 
       {property && (
-        <div className="row">
+        <div className="row mb-5">
           {/* Image Gallery */}
           <div className="col-md-6 mb-4">
             <Carousel
@@ -107,6 +133,11 @@ const PropertyDetail = () => {
             >
               {property.image && (
                 <Carousel.Item key="main-image">
+                  {property.status === "0" && (
+                    <div className="sold-out-overlay rounded-4">
+                      <img src={sold} alt="Sold Out" />
+                    </div>
+                  )}
                   <Image
                     width="100%"
                     height="400"
@@ -124,6 +155,11 @@ const PropertyDetail = () => {
               )}
               {propertyImages.map((image, index) => (
                 <Carousel.Item key={index}>
+                  {property.status === "0" && (
+                    <div className="sold-out-overlay rounded-4">
+                      <img src={sold} alt="Sold Out" />
+                    </div>
+                  )}
                   <Image
                     src={`http://127.0.0.1:8000/${image.sub_images}`}
                     className="d-block mx-auto rounded-3"
@@ -180,9 +216,7 @@ const PropertyDetail = () => {
           {/* Property Details */}
           <div className="col-md-6 pt-3 px-5">
             <p>
-              <strong className="text-dark fs-3 ">
-                $ {property.price || "0.00"}
-              </strong>
+              <strong className="text-dark fs-3 ">${property.price}</strong>
             </p>
             <p className="text-primary mb-3 fs-1">
               {property.address || "No Address"}
@@ -228,76 +262,106 @@ const PropertyDetail = () => {
                 Location: {property.city || "N/A"}, {property.state || "N/A"}
               </strong>
             </p>
-            <p className="text-muted mb-4">
+            <p className="text-muted mb-5">
               <MdOutlineDescription />{" "}
               {property.description || "No description available."}
             </p>
           </div>
         </div>
       )}
-
-      <h4 className="py-4 ps-5 text-light bg-primary rounded-5 rounded-bottom-0">
+      <h4 className="mt-5 py-4 ps-5 text-light bg-primary rounded-5 rounded-bottom-0">
         Tools
       </h4>
       {/* Mortgage Calculator */}
-      <div className="mb-5 bg-light text-dark p-4 rounded d-flex flex-column align-items-center">
-        <h3 className="mb-4">Mortgage Calculator</h3>
-        <div className="w-100" style={{ maxWidth: "600px" }}>
-          <form>
-            <div className="mb-3">
-              <label htmlFor="loanAmount" className="form-label">
-                Loan Amount ($)
-              </label>
-              <input
-                type="number"
-                id="loanAmount"
-                className="form-control"
-                value={loanAmount}
-                onChange={(e) => setLoanAmount(Number(e.target.value))}
-              />
+      <div className="mb-5 bg-light text-dark p-5  ps-5 rounded-4">
+        <div className="row">
+          <div className="col-md-6 ms-5">
+            <h3 className="mb-4 ">Mortgage Calculator</h3>
+            <form>
+              <div className="mb-3">
+                <label htmlFor="loanAmount" className="form-label">
+                  Loan Amount (₹)
+                </label>
+                <input
+                  type="number"
+                  id="loanAmount"
+                  className="form-control"
+                  value={loanAmount}
+                  min="0"
+                  onChange={(e) => setLoanAmount(Number(e.target.value))}
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="downPayment" className="form-label">
+                  Down Payment (₹)
+                </label>
+                <input
+                  type="number"
+                  id="downPayment"
+                  className="form-control"
+                  value={downPayment}
+                  min="0"
+                  onChange={(e) => setDownPayment(Number(e.target.value))}
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="interestRate" className="form-label">
+                  Interest Rate (%)
+                </label>
+                <input
+                  type="number"
+                  id="interestRate"
+                  className="form-control"
+                  step="0.01"
+                  value={interestRate}
+                  min="0"
+                  onChange={(e) => {
+                    const value = Math.min(Number(e.target.value), 20);
+                    setInterestRate(value);
+                  }}
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="loanTerm" className="form-label">
+                  Loan Term (years)
+                </label>
+                <select
+                  id="loanTerm"
+                  className="form-control"
+                  value={loanTerm}
+                  onChange={(e) => setLoanTerm(Number(e.target.value))}
+                >
+                  <option value={1}>1 years</option>
+                  <option value={5}>5 years</option>
+                  <option value={10}>10 years</option>
+                  <option value={15}>15 years</option>
+                  <option value={20}>20 years</option>
+                  <option value={30}>30 years</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div className="col-md-4 ms-5 mt-2">
+            <div className="bg-white mt-5 p-4 rounded-4 shadow-sm">
+              <p className="fs-5 mb-2 fs-4">
+                <strong>
+                  Estimated Monthly Payment: {formatCurrency(monthlyPayment)}
+                </strong>
+              </p>
+              <p className="fs-5 mb-2">
+                <strong>Principal Amount:</strong>{" "}
+                {formatCurrency(principalAmount)}
+              </p>
+              <p className="fs-5 mb-2">
+                <strong>Interest Amount:</strong>{" "}
+                {formatCurrency(interestAmount)}
+              </p>
+              <p className="fs-5 mb-2">
+                <strong>Total Amount Payable:</strong>{" "}
+                {formatCurrency(totalAmountPayable)}
+              </p>
             </div>
-            <div className="mb-3">
-              <label htmlFor="downPayment" className="form-label">
-                Down Payment ($)
-              </label>
-              <input
-                type="number"
-                id="downPayment"
-                className="form-control"
-                value={downPayment}
-                onChange={(e) => setDownPayment(Number(e.target.value))}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="interestRate" className="form-label">
-                Interest Rate (%)
-              </label>
-              <input
-                type="number"
-                id="interestRate"
-                className="form-control"
-                step="0.01"
-                value={interestRate}
-                onChange={(e) => setInterestRate(Number(e.target.value))}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="loanTerm" className="form-label">
-                Loan Term (years)
-              </label>
-              <select
-                id="loanTerm"
-                className="form-control"
-                value={loanTerm}
-                onChange={(e) => setLoanTerm(Number(e.target.value))}
-              >
-                <option value={5}>5 years</option>
-                <option value={10}>10 years</option>
-                <option value={15}>15 years</option>
-              </select>
-            </div>
-          </form>
-          <h4 className="mt-3">Estimated Monthly Payment: ${monthlyPayment}</h4>
+          </div>
         </div>
       </div>
     </div>
