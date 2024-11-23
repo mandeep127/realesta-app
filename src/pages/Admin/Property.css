@@ -1,0 +1,20 @@
+/* .fixed-size {
+     max-width: 100%;
+     box-sizing: border-box;
+   }
+   
+   .property-container {
+     border-radius: 15px;
+     overflow: hidden;
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   }
+   
+   .property-container img {
+     object-fit: cover
+     height: 250px; /* Adjust image height 
+     width: 100%;   /* Ensure image covers the container width 
+   } */
+   
+   .custom-padding{
+     padding-right: 130px;
+   }

@@ -2,90 +2,64 @@ import React, { useEffect, useState } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
-import Logo from "../../assets/admin.gif";
+import userLogo from "../../assets/admin.gif";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { AdminLogins } from "../../store/AdminLoginAPI/adminloginApiSlice";
+import { Login } from "../../store/authAPI/authApiSlice";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 
-const AdminLogin = () => {
+const UserLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [validationErrors, setValidationErrors] = useState({});
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("user_token");
     if (token) {
-      navigate("/admin/dashboard");
+      navigate("/");
       toast.warning("You are already logged in!");
     }
   }, [navigate]);
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    setValidationErrors({});
-    console.log("Form Values:", { email, password });
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      toast.error("Please enter a valid email address.");
+      return;
+    }
 
     try {
-      const response = await dispatch(AdminLogins({ email, password }));
-      console.log("API Response:", response);
-
-      const result = response.payload;
-
-      if (result.data && result.data.token) {
-        localStorage.setItem("token", result.data.token);
-        // localStorage.setItem("adminName", result.data.user.name);
-        navigate("/admin/dashboard");
+      const response = await dispatch(Login({ email, password }));
+      console.log("Response:", response);
+      if (response && response.payload.data.token) {
+        console.log("Token:", response.payload.data.token);
+        localStorage.setItem("user_token", response.payload.data.token);
+        localStorage.setItem("User_Name", response.payload.data.user.name);
+        console.log("User_Name:", response.payload.data.user.name);
         toast.success("Logged in successfully");
-      } else if (result.errors) {
-        setValidationErrors(result.errors);
-        toast.error(result.errors);
+        navigate("/");
       } else {
-        setValidationErrors({
-          general: "Invalid credentials. Please try again.",
-        });
-        toast.error("Invalid credentials. Please try again.");
+        setError(response.message || "Invalid credentials. Please try again.");
+        toast.error(
+          response.message || "Invalid credentials. Please try again."
+        );
       }
     } catch (error) {
       console.error("Login error:", error.message);
-      toast.error("Login error:", error.message);
-
-      setValidationErrors({
-        general: "Failed to login. Please try again later.",
-      });
+      toast.error("Failed to login. Please try again later.");
+      setError("Failed to login. Please try again later.");
     }
-  };
-
-  const renderErrors = () => {
-    const errorMessages = [];
-
-    if (validationErrors.general) {
-      errorMessages.push(validationErrors.general);
-    }
-
-    if (validationErrors.email) {
-      errorMessages.push(...validationErrors.email);
-    }
-
-    if (validationErrors.password) {
-      errorMessages.push(...validationErrors.password);
-    }
-
-    if (errorMessages.length > 0) {
-      return (
-        <div className="text-danger mb-3">
-          {errorMessages.map((error, index) => (
-            <p key={index}>{error}</p>
-          ))}
-        </div>
-      );
-    }
-    return null;
   };
 
   return (
@@ -97,14 +71,14 @@ const AdminLogin = () => {
       >
         <div className="text-center">
           <img
-            src={Logo}
+            src={userLogo}
             className="mb-3"
             width="50"
             height="50"
-            alt="Admin logo"
+            alt="user logo"
           />
-          <h2 className="mb-3">Admin Sign In</h2>
-          {renderErrors()}
+          <h2 className="mb-3">Sign In</h2>
+          <p className="text-danger">{error}</p>
           <p>
             <a className="text-primary text-decoration-none" href="/register">
               Register Now
@@ -113,12 +87,12 @@ const AdminLogin = () => {
         </div>
         <Form.Group
           className="mb-3 d-flex align-items-center"
-          controlId="formEmail"
+          controlId="formGroupLogin"
         >
           <Form.Control
             className="rounded-1 border border-3 me-2"
-            type="email"
-            placeholder="Email Address"
+            type="text"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -127,7 +101,7 @@ const AdminLogin = () => {
         </Form.Group>
         <Form.Group
           className="mb-3 d-flex align-items-center"
-          controlId="formPassword"
+          controlId="formGroupPassword"
         >
           <Form.Control
             className="rounded-1 border border-3 me-2"
@@ -159,4 +133,4 @@ const AdminLogin = () => {
   );
 };
 
-export default AdminLogin;
+export default UserLogin;

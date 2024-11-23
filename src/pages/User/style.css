@@ -1,0 +1,81 @@
+/* .property-form-container{
+    margin: 20px 70px 70px 70px;
+    padding: 5px 40px 40px 40px;
+    background-color: rgba(233, 233, 233, 0.644);
+}
+
+/* .property-form-container {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     flex-direction: column;
+     margin: 70px;
+     padding-top: 30px;
+     padding-bottom: 50px;
+     background-color: rgba(233, 233, 233, 0.644);
+   } 
+
+   h2 {
+     margin-top: 30px;
+     margin-bottom: 10px;
+} */
+
+
+.property-form-container {
+     max-width: 900px;
+     margin: 0 auto;
+     padding: 30px;
+     background: #ffffff;
+     border-radius: 10px;
+     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+   }
+   
+ 
+   .property-form h2 {
+     margin-bottom: 20px;
+     font-size: 1.75rem;
+     font-weight: 700;
+     color: #333;
+     border-bottom: 3px solid #f0f0f0;
+     padding-bottom: 5px;
+   }
+   
+
+   /* Label styling */
+   .property-form .form-label {
+     font-weight: 500;
+     color: #666;
+   }
+   
+   .property-form .form-control {
+     border-radius: 0.5rem;
+     border: 1px solid #ddd;
+     padding: 10px;
+     font-size: 1rem;
+     transition: border-color 0.3s, box-shadow 0.3s;
+   }
+   
+   .property-form .form-control:focus {
+     border-color: #007bff;
+     box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+     outline: none;
+   }
+   
+   /* Alerts styling */
+   .alert {
+     margin-top: 20px;
+     border-radius: 0.5rem;
+     font-size: 1rem;
+   }
+   
+   /* Responsive design tweaks */
+   @media (max-width: 768px) {
+     .property-form-container {
+       padding: 20px;
+     }
+   
+     .property-form h2 {
+       font-size: 1.5rem;
+     }
+   }
+   
